@@ -1,0 +1,117 @@
+/* Đặt màu nền và căn chỉnh cho toàn bộ menu */
+.ant-menu {
+    background-color: #001529;
+    /* Màu nền tối cho menu */
+    color: white;
+    /* Màu chữ */
+    border-radius: 8px;
+    /* Bo góc menu */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Thêm bóng đổ nhẹ cho menu */
+    margin: 0;
+    padding: 0;
+}
+
+/* Style cho các mục menu */
+.ant-menu-item,
+.ant-menu-submenu-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 16px;
+    transition: all 0.3s ease;
+    /* Thêm hiệu ứng mượt mà khi hover */
+}
+
+/* Hiệu ứng hover cho các mục menu */
+.ant-menu-item:hover {
+    background-color: #1890ff;
+    /* Màu nền khi hover */
+    color: white;
+    /* Màu chữ khi hover */
+}
+
+/* Hiệu ứng hover cho submenu */
+.ant-menu-submenu-title:hover {
+    background-color: #1890ff;
+    /* Màu nền khi hover cho submenu */
+    color: white;
+    /* Màu chữ khi hover */
+}
+
+/* Style cho button trong menu */
+.ant-btn {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.ant-btn:hover {
+    background-color: #1890ff;
+    /* Màu nền khi hover */
+    color: white;
+    /* Màu chữ khi hover */
+}
+
+/* Cải thiện style cho các mục có submenu */
+.ant-menu-submenu {
+    border-radius: 8px;
+    /* Bo góc cho submenu */
+}
+
+.ant-menu-submenu-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ant-menu-item-button {
+    display: flex;
+    align-items: center;
+}
+
+.ant-menu-item-button>button {
+    margin-left: 10px;
+}
+
+/* Thiết lập màu nền cho menu khi mở submenu */
+.ant-menu-inline.ant-menu-submenu-open {
+    background-color: #1890ff;
+}
+
+/* Style cho mục đang được chọn */
+.ant-menu-item.selected {
+    background-color: #1890ff !important;
+    /* Khi chọn menu item, đổi màu nền */
+    color: white !important;
+}
+
+/* Thêm khoảng cách giữa các mục để menu nhìn dễ chịu hơn */
+.ant-menu-horizontal {
+    border-bottom: none;
+    padding: 0 20px;
+}
+
+/* Sửa style cho nút "Kết nối ví MetaMask" để dễ sử dụng */
+button {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #40a9ff;
+}
+
+button:focus {
+    outline: none;
+}

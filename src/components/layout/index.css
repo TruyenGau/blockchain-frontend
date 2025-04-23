@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+/* Dappazon css*/
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --clr-white: #FFFFFF;
+    --clr-black: #000000;
+    --clr-grey: #707070;
+    --clr-bunker: #131921;
+    --clr-ebony-clay: #232f3e;
+    --clr-orange: #FF9900;
+    --clr-orange-dark: #cc8111;
+}
+
+body {
+    margin: 0;
+    font-family: "Open Sans";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('./assets/background.jpg') no-repeat;
+  background-size: cover;
+  background-position: center; */
+}
+
+h2 {
+    max-width: 1200px;
+    margin: 20px auto 0;
+
+    font-size: 3em;
+}
+
+h2:not(.product__overview h2) {
+    padding-left: 20px;
+}
+
+/* ------------------------------------------------------ */
+/* -- NAVIGATION -- */
+
+nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+
+    /* background-color: var(--clr-bunker); */
+}
+
+.nav__brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav__brand img {
+    max-width: 125px;
+    height: auto;
+}
+
+.nav__brand h3 {
+    color: var(--clr-white);
+    font-family: "Lalezar";
+    font-size: 2.5em;
+}
+
+.nav__links {
+    background-color: var(--clr-ebony-clay);
+    grid-column: 1 / span 3;
+
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    list-style: none;
+}
+
+.nav__links li {
+    margin: 0 15px;
+}
+
+.nav__links li a {
+    text-decoration: none;
+    color: var(--clr-white);
+}
+
+.nav__links li a:hover {
+    color: var(--clr-orange);
+}
+
+.nav__search {
+    padding: 10px;
+    border-radius: 6px;
+    min-width: 50%;
+}
+
+.nav__search:hover {
+    outline: 1px solid var(--clr-orange);
+}
+
+.nav__connect {
+    width: 150px;
+    height: 40px;
+    margin: 0 auto;
+
+    background-color: var(--clr-orange);
+    color: var(--clr-black);
+
+    border: none;
+    border-radius: 4px;
+
+    font-family: "Lalezar";
+    font-size: 1.25em;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 250ms ease;
+}
+
+.nav__connect:hover {
+    background-color: var(--clr-orange-dark);
+}
+
+/* ------------------------------------------------------ */
+/* -- CARDS -- */
+
+
+
+@media screen and (max-width: 768px) {
+    nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nav__links {
+        display: none;
+    }
+
+    .nav__search {
+        display: none;
+    }
+}
