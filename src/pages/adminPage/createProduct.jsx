@@ -4,8 +4,10 @@ import SideBar from '../../components/layout/adminLayout/sidebar';
 import Footer from '../../components/layout/adminLayout/footer';
 import { Button } from 'antd';
 import axios from "../../util/axios.customize"; // Adjust the import path as necessary
+import { useNavigate } from 'react-router-dom';
 
 const CreateProduct = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -55,6 +57,7 @@ const CreateProduct = () => {
             });
             console.log(response.data); // Check backend response
             alert('Product created successfully!');
+            navigate("/homeadmin")
         } catch (error) {
             console.error('Error creating product:', error);
             alert('Failed to create product!');

@@ -4,14 +4,18 @@ import { Link } from "react-router-dom"; // Import Link từ react-router-dom
 import Header from "../../components/layout/adminLayout/header";
 import Footer from "../../components/layout/adminLayout/footer";
 import SideBar from "../../components/layout/adminLayout/sidebar";
-import { getCountUser } from "../../util/api";
+import { getCountProduct, getCountUser } from "../../util/api";
 
 const HomeAdmin = () => {
     const [countUser, setCountUser] = useState(0);
+    const [countProduct, setCountProduct] = useState(0);
+
     const getCount = async () => {
-        const data = await getCountUser();
-        console.log("countUser", data);
-        setCountUser(data.data);
+        const dataUser = await getCountUser();
+        setCountUser(dataUser.data);
+        const dataProduct = await getCountProduct();
+        setCountProduct(dataProduct.data);
+
     }
 
     useEffect(() => {
@@ -43,9 +47,9 @@ const HomeAdmin = () => {
                                 </div>
                                 <div className="col-xl-4 col-md-6">
                                     <div className="card bg-danger text-white mb-4">
-                                        <div className="card-body">Số lượng Product</div>
+                                        <div className="card-body" style={{ fontSize: "27px", alignContent: "center", alignItems: 'center' }}>Số lượng Product: {countProduct}</div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
-                                            <Link className="small text-white stretched-link" to="/createproduct">View Details</Link>
+                                            <Link className="small text-white stretched-link" to="/showproduct">View Details</Link>
                                             <div className="small text-white"><i className="fas fa-angle-right"></i></div>
                                         </div>
                                     </div>

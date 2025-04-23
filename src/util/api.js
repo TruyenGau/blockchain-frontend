@@ -32,13 +32,18 @@ const getCountUser = () => {
     }
 }
 
-const createProduct = (name, price, shortDesc, address, stock, category) => {
+const getCountProduct = () => {
 
     {
-        const URL_API = "/v1/api/createProduct";
-        const data = { name, price, shortDesc, address, stock, category };
+        const URL_API = "/v1/api/countProduct";
         return axios.get(URL_API);
     }
+}
+
+const getAllProduct = () => {
+    const URL_API = "/v1/api/getProduct";
+    return axios.get(URL_API);
+
 }
 
 
@@ -47,6 +52,8 @@ export {
     loginApi,
     fetchUserApi,
     updateAccount,
-    getCountUser
+    getCountUser,
+    getCountProduct,
+    getAllProduct
 
 }

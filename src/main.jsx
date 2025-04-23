@@ -16,6 +16,7 @@ import ProductDetail from './pages/ProductDetail.jsx';
 import Order from './pages/Oder.jsx';
 import HomeAdmin from './pages/adminPage/homeAdmin.jsx';
 import CreateProduct from './pages/adminPage/createProduct.jsx';
+import ShowProduct from './pages/adminPage/showProduct.jsx';
 
 
 
@@ -58,6 +59,10 @@ let router = createBrowserRouter([
   {
     path: "createproduct",
     element: <CreateProduct />
+  },
+  {
+    path: "showproduct",
+    element: <ShowProduct />
   },
 
 
