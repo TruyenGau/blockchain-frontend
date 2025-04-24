@@ -56,9 +56,9 @@ const ProductDetail = () => {
                                 <div className="border rounded">
                                     <a href="#">
                                         <img
-                                            src={product.image}
+                                            src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
                                             className="img-fluid rounded"
-                                            alt={product.name}
+
                                         />
                                     </a>
                                 </div>

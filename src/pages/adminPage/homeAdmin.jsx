@@ -15,13 +15,12 @@ const HomeAdmin = () => {
         setCountUser(dataUser.data);
         const dataProduct = await getCountProduct();
         setCountProduct(dataProduct.data);
-
     }
 
     useEffect(() => {
         getCount();
     }, []);
-    console.log("countUser", countUser);
+
 
     return (
         <div className="sb-nav-fixed">

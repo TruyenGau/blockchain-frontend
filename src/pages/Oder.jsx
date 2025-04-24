@@ -63,9 +63,9 @@ const Order = () => {
                                                     <div className="rounded position-relative fruite-item">
                                                         <div className="fruite-img">
                                                             <img
-                                                                src={product.image}
+                                                                src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
                                                                 className="img-fluid w-100 rounded-top"
-                                                                alt={product.name}
+
                                                             />
                                                         </div>
                                                         <div

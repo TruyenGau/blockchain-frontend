@@ -53,10 +53,6 @@ let router = createBrowserRouter([
     element: <HomeAdmin />
   },
   {
-    path: "homeadmin",
-    element: <HomeAdmin />
-  },
-  {
     path: "createproduct",
     element: <CreateProduct />
   },

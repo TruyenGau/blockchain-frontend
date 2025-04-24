@@ -10,8 +10,7 @@ const ShowProduct = () => {
     }
     useEffect(() => {
         getAllProducts()
-    },
-        []);
+    }, []);
     console.log("products", products);
     return (
         <div className="sb-nav-fixed">

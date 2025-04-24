@@ -12,12 +12,19 @@ import Banner from "../components/layout/banner";
 import Feature from "../components/layout/feature";
 import Footer from "../components/layout/footer";
 import { AuthContext } from "../components/context/auth.context";
+import { getAllProduct } from "../util/api";
 
 const HomeTest = () => {
 
     const { auth, setAuth, dappazon, setDappazon, provider, setProvider } = useContext(AuthContext);
 
     const [data, setData] = useState([]);
+    const [countProduct, setCountProduct] = useState(0);
+
+    const getCountProduct = async () => {
+        const data = await getAllProduct();
+        setCountProduct(data.length);
+    }
 
 
     const loadBlockchainData = async () => {
@@ -34,7 +41,7 @@ const HomeTest = () => {
         setDappazon(dappazon);
 
         const datafetch = [];
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < countProduct; i++) {
             const item = await dappazon.items(i + 1);
             datafetch.push(item);
         }
@@ -44,9 +51,17 @@ const HomeTest = () => {
     };
 
     useEffect(() => {
-        loadBlockchainData();
+        // Gọi hàm để lấy số lượng sản phẩm và sau đó gọi loadBlockchainData
+        getCountProduct();
     }, []);
-    console.log("data", data);
+
+    // Sử dụng useEffect để gọi loadBlockchainData sau khi countProduct thay đổi
+    useEffect(() => {
+        if (countProduct > 0) {
+            loadBlockchainData();
+        }
+    }, [countProduct]); // Khi countProduct thay đổi, gọi lại loadBlockchainData
+    console.log("count", countProduct);
 
 
     return (
@@ -82,9 +97,9 @@ const HomeTest = () => {
                                                     <div className="rounded position-relative fruite-item">
                                                         <div className="fruite-img">
                                                             <img
-                                                                src={product.image}
+                                                                src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
                                                                 className="img-fluid w-100 rounded-top"
-                                                                alt={product.name}
+
                                                             />
                                                         </div>
                                                         <div

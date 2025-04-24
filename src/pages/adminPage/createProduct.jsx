@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '../../components/layout/adminLayout/header';
 import SideBar from '../../components/layout/adminLayout/sidebar';
 import Footer from '../../components/layout/adminLayout/footer';
 import { Button } from 'antd';
 import axios from "../../util/axios.customize"; // Adjust the import path as necessary
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../components/context/auth.context';
+import { ethers } from "ethers";
+import Dappazon from "../../../blockchain/abis/Dappazon.json";
+import config from "../../config.json";
 
 const CreateProduct = () => {
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -47,22 +52,49 @@ const CreateProduct = () => {
             data.append(key, formData[key]);
         }
 
-        console.log('FormData:', data); // Check FormData
-
         try {
             const response = await axios.post('http://localhost:8081/v1/api/createProduct', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log(response.data); // Check backend response
+
+            console.log(response.data); // Kiểm tra phản hồi từ backend
             alert('Product created successfully!');
-            navigate("/homeadmin")
+            // navigate("/homeadmin");
+
+            // Sau khi tạo sản phẩm, bạn có thể sử dụng tên ảnh từ backend và thực hiện hành động tiếp theo
+            const imageName = response.product.image; // Lấy tên ảnh từ response
+            console.log("Product Image Name:", imageName);
+
+            // Tiếp theo bạn có thể dùng imageName này để thực hiện các thao tác khác (ví dụ, lưu vào blockchain)
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+            const dappazon = new ethers.Contract(
+                config[network.chainId].dappazon.address,
+                Dappazon,
+                provider
+            );
+            const signer = provider.getSigner();
+            const priceInWei = ethers.utils.parseUnits(formData.price, "ether");
+
+            const transaction = await dappazon
+                .connect(signer)
+                .addProduct(formData.name,
+                    formData.category,
+                    response.product.image, // Truyền tên ảnh đã lấy từ backend
+                    priceInWei,
+                    formData.shortDesc,
+                    formData.stock
+                );
+            await transaction.wait();
+
         } catch (error) {
             console.error('Error creating product:', error);
             alert('Failed to create product!');
         }
     };
+
 
     return (
         <div className="sb-nav-fixed">
