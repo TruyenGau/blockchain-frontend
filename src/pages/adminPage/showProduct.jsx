@@ -52,8 +52,10 @@ const ShowProduct = () => {
                                                         <td>{product.name}</td>
                                                         <td>{product.price}</td>
                                                         <td>{product.category}</td>
-                                                        <img src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
-                                                            style={{ width: "150px", height: "150px" }} />
+                                                        <td className="text-center">
+                                                            <img src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
+                                                                style={{ width: "150px", height: "150px", objectFit: "cover" }} />
+                                                        </td>
 
 
                                                         <td>
