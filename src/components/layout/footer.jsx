@@ -24,20 +24,20 @@ const Footer = () => {
                         <div className="col-lg-3 col-md-6">
                             <div className="d-flex flex-column text-start footer-item">
                                 <h4 className="mb-3 text-light">Shop Info</h4>
-                                <a href="#" class="btn-link">About Us</a>
+                                <a href="#" className="btn-link">About Us</a>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="d-flex flex-column text-start footer-item">
                                 <h4 className="mb-3 text-light">Account</h4>
-                                <a href="#" class="btn-link">My Account</a>
+                                <a href="#" className="btn-link">My Account</a>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-item">
                                 <h4 className="mb-3 text-light">Contact</h4>
-                                <a href="#" class="btn-link">Author: Meo Meo</a>
-                                <a href="#" class="btn-link">truyendeptrai</a>
+                                <a href="#" className="btn-link">Author: Meo Meo</a>
+                                <a href="#" className="btn-link">truyendeptrai</a>
                             </div>
                         </div>
                     </div>

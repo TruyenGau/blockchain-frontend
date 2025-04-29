@@ -14,6 +14,7 @@ const CreateProduct = ({ dappazon, provider, addNewProduct }) => {
     const [stock, setStock] = useState("");
 
     const createProductHandler = async () => {
+
         const signer = provider.getSigner();
         const transaction = await dappazon
             .connect(signer)

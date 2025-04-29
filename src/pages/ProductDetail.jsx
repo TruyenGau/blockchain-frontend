@@ -6,6 +6,7 @@ import "./css/lightbox.min.css";
 import "./css/owl.carousel.min.css";
 import { ethers } from "ethers";
 import { AuthContext } from "../components/context/auth.context";
+import { notification } from "antd";
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -31,7 +32,13 @@ const ProductDetail = () => {
             .buy(product.id, 1, { value: product.price });
         await transaction.wait();
 
-        alert("Purchase successful!", address);
+        // alert("Purchase successful!", address);
+        notification.success({
+            message: "Mua sản phẩm thành công!",
+            showProgress: true
+
+
+        })
     };
 
     return (
@@ -56,9 +63,9 @@ const ProductDetail = () => {
                                 <div className="border rounded">
                                     <a href="#">
                                         <img
-                                            src={product.image}
+                                            src={`${import.meta.env.VITE_BACKEND_URL}/routes/productLaptop/${product.image}`} alt="Product"
                                             className="img-fluid rounded"
-                                            alt={product.name}
+
                                         />
                                     </a>
                                 </div>
