@@ -12,7 +12,8 @@ import Banner from "../components/layout/banner";
 import Feature from "../components/layout/feature";
 import Footer from "../components/layout/footer";
 import { AuthContext } from "../components/context/auth.context";
-import { getAllProduct } from "../util/api";
+import { getAllProduct, getAProduct, getProductDetail } from "../util/api";
+import { notification } from "antd";
 
 const HomeTest = () => {
 
@@ -20,7 +21,7 @@ const HomeTest = () => {
 
     const [data, setData] = useState([]);
     const [countProduct, setCountProduct] = useState(0);
-
+    const [test, setTest] = useState({});
     const getCountProduct = async () => {
         const data = await getAllProduct();
         setCountProduct(data.length);
@@ -50,6 +51,31 @@ const HomeTest = () => {
 
     };
 
+    const handleBuyProduct = async (product) => {
+
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        if (address !== auth.user.address) {
+            alert("Địa chỉ ví MetaMask hiện tại không trùng với ví của người dùng!. Vui lòng chọn đúng tài khoản");
+            return;
+        }
+        // const product = await getAProduct(id);
+        // alert(id)
+        setTest(product);
+        const transaction = await dappazon
+            .connect(signer)
+            .buy(product.id, 1, { value: product.price });
+        await transaction.wait();
+
+        // alert("Purchase successful!", address);
+        notification.success({
+            message: "Mua sản phẩm thành công!",
+            showProgress: true
+
+
+        })
+    }
+
     useEffect(() => {
         // Gọi hàm để lấy số lượng sản phẩm và sau đó gọi loadBlockchainData
         getCountProduct();
@@ -62,6 +88,7 @@ const HomeTest = () => {
         }
     }, [countProduct]); // Khi countProduct thay đổi, gọi lại loadBlockchainData
     console.log("count", countProduct);
+    console.log("test", test);
 
 
     return (
@@ -129,17 +156,13 @@ const HomeTest = () => {
                                                                 >
                                                                     {ethers.utils.formatUnits(product.price.toString(), 'ether')} ETH
                                                                 </p>
-                                                                <form
-                                                                    action={`/add-product-to-cart/${product.id}`}
-                                                                    method="post"
+
+                                                                <button onClick={() => { handleBuyProduct(product) }} className="mx-auto btn border border-secondary rounded-pill px-3 text-primary"
                                                                 >
-                                                                    <button
-                                                                        className="mx-auto btn border border-secondary rounded-pill px-3 text-primary"
-                                                                    >
-                                                                        <i className="fa fa-shopping-bag me-2 text-primary"></i>
-                                                                        Add to cart
-                                                                    </button>
-                                                                </form>
+                                                                    <i className="fa fa-shopping-bag me-2 text-primary"></i>
+                                                                    Mua ngay
+                                                                </button>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -152,7 +175,7 @@ const HomeTest = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
             <Feature />
 
         </>

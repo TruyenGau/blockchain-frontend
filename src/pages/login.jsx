@@ -18,8 +18,9 @@ const LoginPage = () => {
         if (res && res.EC === 0 && res.user.role === "user") {
             localStorage.setItem("access_token", res.access_token);
             notification.success({
-                message: "Login user success",
-                description: "success"
+                message: "Người dùng đăng nhập thành công",
+                description: "success",
+                showProgress: true
             })
             setAuth({
                 isAuthenticated: true,
@@ -34,8 +35,8 @@ const LoginPage = () => {
         } else if (res && res.EC === 0 && res.user.role === "admin") {
             localStorage.setItem("access_token", res.access_token);
             notification.success({
-                message: "Login admin success",
-                description: "success"
+                message: "Đăng nhập admin thành công",
+                showProgress: true
             })
             setAuth({
                 isAuthenticated: true,

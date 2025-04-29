@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getAllProduct } from '../../util/api';
+import { deleteProduct, getAllProduct } from '../../util/api';
 import { use } from 'react';
+import { Link } from 'react-router-dom';
 
 const ShowProduct = () => {
     const [products, setProducts] = useState([]);
@@ -12,6 +13,32 @@ const ShowProduct = () => {
         getAllProducts()
     }, []);
     console.log("products", products);
+
+    const handleDeleteProduct = async (id) => {
+        const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm này không?`);
+
+        if (isConfirmed) {
+            try {
+                // Gọi API để xóa sản phẩm
+                const result = await deleteProduct(id);
+
+                // Nếu xóa thành công, cập nhật lại danh sách sản phẩm
+                if (result) {
+                    // Cập nhật lại danh sách sản phẩm sau khi xóa
+                    // setProducts(products.filter((product) => product._id !== id));
+                    alert("Đã xóa sản phẩm thành công!");
+                } else {
+                    alert("Failed to delete the product.");
+                }
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                alert("An error occurred while deleting the product.");
+            }
+        }
+    }
+
+
+
     return (
         <div className="sb-nav-fixed">
             <div id="layoutSidenav">
@@ -56,9 +83,9 @@ const ShowProduct = () => {
 
 
                                                         <td>
-                                                            <a href={`/admin/product/${product.id}`} className="btn btn-success">View</a>
+                                                            <Link to={`/getProductDetail/${product._id}`} className="btn btn-success">View</Link>
                                                             <a href={`/admin/product/update/${product.id}`} className="btn btn-warning mx-2">Update</a>
-                                                            <a href={`/admin/product/delete/${product.id}`} className="btn btn-danger">Delete</a>
+                                                            <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id) }}>Delete</button>
                                                         </td>
                                                     </tr>
                                                 ))}

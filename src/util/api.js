@@ -46,6 +46,22 @@ const getAllProduct = () => {
 
 }
 
+const deleteProduct = (id) => {
+    const URL_API = "/v1/api/deleteProduct";
+    const data = id;
+    return axios.delete(URL_API, data);
+
+}
+
+const getProductDetail = (id) => {
+    const URL_API = `/v1/api/getProductDetail/${id}`;
+    return axios.get(URL_API);
+}
+const getAProduct = (id) => {
+    const URL_API = "/v1/api/getAProduct";
+    const data = id;
+    return axios.get(URL_API, data);
+}
 
 export {
     createUserApi,
@@ -54,6 +70,9 @@ export {
     updateAccount,
     getCountUser,
     getCountProduct,
-    getAllProduct
+    getAllProduct,
+    deleteProduct,
+    getProductDetail,
+    getAProduct
 
 }

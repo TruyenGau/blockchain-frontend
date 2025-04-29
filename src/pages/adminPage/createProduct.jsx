@@ -88,6 +88,7 @@ const CreateProduct = () => {
                     formData.stock
                 );
             await transaction.wait();
+            navigate("/showproduct");
 
         } catch (error) {
             console.error('Error creating product:', error);

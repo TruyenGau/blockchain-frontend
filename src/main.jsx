@@ -17,6 +17,7 @@ import Order from './pages/Oder.jsx';
 import HomeAdmin from './pages/adminPage/homeAdmin.jsx';
 import CreateProduct from './pages/adminPage/createProduct.jsx';
 import ShowProduct from './pages/adminPage/showProduct.jsx';
+import DetailProduct from './pages/adminPage/detailProduct.jsx';
 
 
 
@@ -59,6 +60,10 @@ let router = createBrowserRouter([
   {
     path: "showproduct",
     element: <ShowProduct />
+  },
+  {
+    path: "getProductDetail/:id",
+    element: <DetailProduct />
   },
 
 

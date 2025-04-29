@@ -13,8 +13,8 @@ const RegisterPage = () => {
         console.log("response", res);
         if (res) {
             notification.success({
-                message: "Create user success",
-                description: "success"
+                message: "Tạo tài khoản thành công",
+                showProgress: true
             })
             naviGate("/login");
         } else {
