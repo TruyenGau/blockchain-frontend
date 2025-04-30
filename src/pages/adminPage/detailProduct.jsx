@@ -30,8 +30,8 @@ const DetailProduct = () => {
                         <div className="container-fluid px-4">
                             <h1 className="mt-4">Chi tiết sản phẩm</h1>
                             <ol className="breadcrumb mb-4">
-                                <li className="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
-                                <li className="breadcrumb-item"><a href="/admin/product">Sản phẩm</a></li>
+                                <li className="breadcrumb-item"><a href="/homeadmin">Trang chủ</a></li>
+                                <li className="breadcrumb-item"><a href="/showproduct">Sản phẩm</a></li>
                                 <li className="breadcrumb-item active">Chi tiết sản phẩm</li>
                             </ol>
 
@@ -72,7 +72,7 @@ const DetailProduct = () => {
                             className="btn btn-success mt-3 mb-4"
                             onClick={() => navigate('/showproduct')}  // Sử dụng useNavigate thay cho history.push
                         >
-                            Trở về 
+                            Trở về
                         </button>
                     </div>
                 </div>

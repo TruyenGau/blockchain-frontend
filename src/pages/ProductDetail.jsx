@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./css/style.css";
 import "./css/bootstrap.min.css";
@@ -14,7 +14,9 @@ const ProductDetail = () => {
     const { auth, setAuth, dappazon, setDappazon, provider, setProvider } = useContext(AuthContext);
     // Tạo state để lưu trữ số lượng
     const [quantity, setQuantity] = useState(1);
-
+    useEffect(() => {
+        window.scrollTo(0, 0);  // Scroll lên đầu trang khi vào trang này
+    }, []);
     // Hàm xử lý thay đổi số lượng
     const handleQuantityChange = (e) => {
         const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng không nhỏ hơn 1

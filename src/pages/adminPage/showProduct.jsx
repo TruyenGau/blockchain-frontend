@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { deleteProduct, getAllProduct } from '../../util/api';
 import { use } from 'react';
 import { Link } from 'react-router-dom';
+import { notification } from 'antd';
 
 const ShowProduct = () => {
     const [products, setProducts] = useState([]);
@@ -15,18 +16,19 @@ const ShowProduct = () => {
     console.log("products", products);
 
     const handleDeleteProduct = async (id) => {
+        ;
         const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm này không?`);
-
         if (isConfirmed) {
             try {
-                // Gọi API để xóa sản phẩm
                 const result = await deleteProduct(id);
-
-                // Nếu xóa thành công, cập nhật lại danh sách sản phẩm
-                if (result) {
-                    // Cập nhật lại danh sách sản phẩm sau khi xóa
-                    // setProducts(products.filter((product) => product._id !== id));
-                    alert("Đã xóa sản phẩm thành công!");
+                if (result.EC === 1) {
+                    // Xóa sản phẩm khỏi danh sách trên giao diện mà không cần gọi lại API
+                    setProducts(products.filter(product => product._id !== id));
+                    notification.success({
+                        message: 'Thành công',
+                        description: 'Xóa sản phẩm thành công!',
+                        showProgress: true
+                    });
                 } else {
                     alert("Failed to delete the product.");
                 }
@@ -48,7 +50,7 @@ const ShowProduct = () => {
                             <h1 className="mt-4">Quản lí sản phẩm</h1>
                             <ol className="breadcrumb mb-4">
                                 <li className="breadcrumb-item">
-                                    <a href="/admin">Trang chủ</a>
+                                    <a href="/homeadmin">Trang chủ</a>
                                 </li>
                                 <li className="breadcrumb-item active">Sản phẩm</li>
                             </ol>
@@ -86,7 +88,7 @@ const ShowProduct = () => {
 
                                                         <td>
                                                             <Link to={`/getProductDetail/${product._id}`} className="btn btn-success">Xem </Link>
-                                                            <a href={`/admin/product/update/${product.id}`} className="btn btn-warning mx-2">Sửa</a>
+                                                            <Link to={`/updateProduct/${product._id}`} className="btn btn-warning mx-2">Chỉnh sửa</Link>
                                                             <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id) }}>Xóa</button>
                                                         </td>
                                                     </tr>

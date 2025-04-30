@@ -48,9 +48,7 @@ const getAllProduct = () => {
 
 const deleteProduct = (id) => {
     const URL_API = "/v1/api/deleteProduct";
-    const data = id;
-    return axios.delete(URL_API, data);
-
+    return axios.delete(URL_API, { data: { id } }); // Gửi dữ liệu trong phần data của config
 }
 
 const getProductDetail = (id) => {
@@ -58,9 +56,8 @@ const getProductDetail = (id) => {
     return axios.get(URL_API);
 }
 const getAProduct = (id) => {
-    const URL_API = "/v1/api/getAProduct";
-    const data = id;
-    return axios.get(URL_API, data);
+    const URL_API = `/v1/api/getAProduct/${id}`; // Truyền id dưới dạng query parameter
+    return axios.get(URL_API);
 }
 
 export {
