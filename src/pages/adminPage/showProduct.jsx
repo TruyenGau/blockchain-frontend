@@ -45,19 +45,19 @@ const ShowProduct = () => {
                 <div id="layoutSidenav_content">
                     <main>
                         <div className="container-fluid px-4">
-                            <h1 className="mt-4">Manage Products</h1>
+                            <h1 className="mt-4">Quản lí sản phẩm</h1>
                             <ol className="breadcrumb mb-4">
                                 <li className="breadcrumb-item">
-                                    <a href="/admin">Dashboard</a>
+                                    <a href="/admin">Trang chủ</a>
                                 </li>
-                                <li className="breadcrumb-item active">Products</li>
+                                <li className="breadcrumb-item active">Sản phẩm</li>
                             </ol>
                             <div className="mt-5">
                                 <div className="row">
                                     <div className="col-12 mx-auto">
                                         <div className="d-flex justify-content-between">
-                                            <h3>Table Products</h3>
-                                            <a href="/createproduct" className="btn btn-primary">Create a Product</a>
+                                            <h3>Danh sách sản phẩm</h3>
+                                            <a href="/createproduct" className="btn btn-primary">Tạo sản phẩm mới</a>
                                         </div>
                                         <hr />
                                         <table className="table table-bordered table-hover">
@@ -66,9 +66,9 @@ const ShowProduct = () => {
                                                     <th>ID</th>
                                                     <th>Name</th>
                                                     <th>Price</th>
-                                                    <th>Factory</th>
-                                                    <th>Action</th>
+                                                    <th>Category</th>
                                                     <th>Image</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -85,9 +85,9 @@ const ShowProduct = () => {
 
 
                                                         <td>
-                                                            <Link to={`/getProductDetail/${product._id}`} className="btn btn-success">View</Link>
-                                                            <a href={`/admin/product/update/${product.id}`} className="btn btn-warning mx-2">Update</a>
-                                                            <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id) }}>Delete</button>
+                                                            <Link to={`/getProductDetail/${product._id}`} className="btn btn-success">Xem </Link>
+                                                            <a href={`/admin/product/update/${product.id}`} className="btn btn-warning mx-2">Sửa</a>
+                                                            <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id) }}>Xóa</button>
                                                         </td>
                                                     </tr>
                                                 ))}

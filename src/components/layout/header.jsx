@@ -92,16 +92,27 @@ const Header = () => {
     }
     const items = [
         {
-            label: <NavLink to={"/"}>Home</NavLink>,
+            label: <NavLink to={"/"}>Trang Chủ</NavLink>,
             key: 'home',
             icon: <HomeOutlined />,
         },
 
         ...(auth.isAuthenticated ? [{
-            label: <NavLink to={"/order"}>Order</NavLink>,
+            label: <NavLink to={"/order"}>Lịch sử mua hàng</NavLink>,
             key: 'user',
             icon: <UsergroupAddOutlined />,
         }] : []),
+
+
+        ...(auth.user.address !== "" ? [{
+            label: <button onClick={handleConnected}>Đã kết nối ví metamask: {auth.user.name}</button>,
+            key: 'metamask',
+            icon: <UsergroupAddOutlined />,
+        }] : [{
+            label: <button onClick={connectHandler} className='button'>Kết nối ví MetaMask</button>,
+            key: 'metamask1',
+            icon: <UsergroupAddOutlined />,
+        }]),
 
         {
             label: `Welcome ${auth?.user?.email ?? ""}`,
@@ -119,17 +130,6 @@ const Header = () => {
 
 
         },
-        ...(auth.user.address !== "" ? [{
-            label: <button onClick={handleConnected}>Đã kết nối ví metamask: {auth.user.name}</button>,
-            key: 'metamask',
-            icon: <UsergroupAddOutlined />,
-        }] : [{
-            label: <button onClick={connectHandler} className='button'>Kết nối ví MetaMask</button>,
-            key: 'metamask1',
-            icon: <UsergroupAddOutlined />,
-        }]),
-
-
 
 
 

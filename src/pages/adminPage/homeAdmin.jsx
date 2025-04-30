@@ -30,16 +30,16 @@ const HomeAdmin = () => {
                 <div id="layoutSidenav_content">
                     <main>
                         <div className="container-fluid px-4">
-                            <h1 className="mt-4 text-primary" >Dashboard</h1>
+                            <h1 className="mt-4 text-primary" >Trang chủ</h1>
                             <ol className="breadcrumb mb-4">
-                                <li className="breadcrumb-item active">Thống kê</li>
+                                {/* <li className="breadcrumb-item active">Thống kê</li> */}
                             </ol>
                             <div className="row">
                                 <div className="col-xl-4 col-md-6">
                                     <div className="card bg-primary text-white mb-4">
                                         <div className="card-body" style={{ fontSize: "30px", alignContent: "center", alignItems: 'center' }}> Số lượng User: {countUser}</div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
-                                            <Link className="small text-white stretched-link" to="/admin/user">View Details</Link>
+                                            <Link className="small text-white stretched-link" to="/admin/user">Xem chi tiết</Link>
                                             <div className="small text-white"><i className="fas fa-angle-right"></i></div>
                                         </div>
                                     </div>
@@ -48,7 +48,7 @@ const HomeAdmin = () => {
                                     <div className="card bg-danger text-white mb-4">
                                         <div className="card-body" style={{ fontSize: "27px", alignContent: "center", alignItems: 'center' }}>Số lượng Product: {countProduct}</div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
-                                            <Link className="small text-white stretched-link" to="/showproduct">View Details</Link>
+                                            <Link className="small text-white stretched-link" to="/showproduct">Xem chi tiết</Link>
                                             <div className="small text-white"><i className="fas fa-angle-right"></i></div>
                                         </div>
                                     </div>
@@ -57,7 +57,7 @@ const HomeAdmin = () => {
                                     <div className="card bg-success text-white mb-4">
                                         <div className="card-body">Số lượng Order</div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
-                                            <Link className="small text-white stretched-link" to="/admin/order">View Details</Link>
+                                            <Link className="small text-white stretched-link" to="/admin/order">Xem chi tiết</Link>
                                             <div className="small text-white"><i className="fas fa-angle-right"></i></div>
                                         </div>
                                     </div>
@@ -65,7 +65,7 @@ const HomeAdmin = () => {
                             </div>
                         </div>
                     </main>
-                    <Footer />
+                    {/* <Footer /> */}
                 </div>
             </div>
         </div>

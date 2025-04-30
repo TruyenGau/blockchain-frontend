@@ -104,15 +104,15 @@ const CreateProduct = () => {
                 <div id="layoutSidenav_content">
                     <main>
                         <div className="container-fluid px-4">
-                            <h1 className="mt-4">Products</h1>
+                            <h1 className="mt-4">Sản Phẩm</h1>
                             <ol className="breadcrumb mb-4">
-                                <li className="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li className="breadcrumb-item active">Create Product</li>
+                                <li className="breadcrumb-item"><a href="/admin">Trang Chủ</a></li>
+                                <li className="breadcrumb-item active">Tạo sản phẩm mới</li>
                             </ol>
                             <div className="mt-5">
                                 <div className="row">
                                     <div className="col-md-8 col-12 mx-auto">
-                                        <h3>Create a product</h3>
+                                        <h3>Tạo sản phẩm mới</h3>
                                         <hr />
                                         <form
                                             onSubmit={handleSubmit}
@@ -217,7 +217,7 @@ const CreateProduct = () => {
                                                         cursor: 'pointer',
                                                     }}
                                                 >
-                                                    Upload Avatar
+                                                    Thêm ảnh mới
                                                 </label>
                                                 <input
                                                     type="file"
@@ -251,7 +251,7 @@ const CreateProduct = () => {
                                             {/* Submit Button */}
                                             <div className="col-12 mb-5" style={{ marginTop: "40px" }}>
                                                 <button type="submit" className="btn btn-primary">
-                                                    Create Product
+                                                    Tạo sản phẩm
                                                 </button>
                                             </div>
                                         </form>

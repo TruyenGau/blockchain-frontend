@@ -1,115 +1,97 @@
 import React from 'react';
-import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
 import { createUserApi } from '../util/api';
 import { Link, useNavigate } from 'react-router-dom';
+import { UserAddOutlined } from '@ant-design/icons';
 
 const RegisterPage = () => {
-    const naviGate = useNavigate();
+    const navigate = useNavigate();
     const [form] = Form.useForm();
-    const onFinish = async (values) => {
 
+    const onFinish = async (values) => {
         const { name, email, password, confirmPassword } = values;
         const res = await createUserApi(name, email, password, confirmPassword);
-        console.log("response", res);
         if (res) {
             notification.success({
                 message: "Tạo tài khoản thành công",
-                showProgress: true
-            })
-            naviGate("/login");
+            });
+            navigate("/login");
         } else {
             notification.error({
-                message: "Create user error",
-                description: "error"
-            })
+                message: "Tạo tài khoản thất bại",
+                description: "Vui lòng thử lại!",
+            });
         }
     };
 
     return (
-        <Form
-            form={form}
-            layout="vertical"
-            onFinish={onFinish}
-            style={{ margin: "10px" }}
-        >
-            <h3 style={{ textAlign: "center" }}>Đăng ký tài khoản</h3>
-            <Row justify={"center"}>
-                <Col xs={24} md={8}>
+        <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'linear-gradient(135deg, #e0f2fe, #f0f9ff)',
+            padding: '20px'
+        }}>
+            <div style={{
+                background: '#fff',
+                padding: '50px',
+                borderRadius: '20px',
+                width: '100%',
+                maxWidth: '480px',
+                boxShadow: '0 15px 40px rgba(0,0,0,0.1)',
+                textAlign: 'center'
+            }}>
+                <UserAddOutlined style={{ fontSize: 40, color: '#22c55e' }} />
+                <h2 style={{ marginTop: 16, fontWeight: 600 }}>Đăng ký tài khoản</h2>
+                <p style={{ color: '#666', marginBottom: 30 }}>Tạo tài khoản mới để bắt đầu mua sắm</p>
+
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onFinish}
+                >
                     <Form.Item
                         label="Email"
                         name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email!',
-                            },
-                        ]}
+                        rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
                     >
-                        <Input />
+                        <Input size="large" placeholder="you@example.com" />
                     </Form.Item>
-                </Col>
-            </Row>
-            <Row justify={"center"}>
-                <Col xs={24} md={8}>
                     <Form.Item
-                        label="Name"
+                        label="Tên"
                         name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your name!',
-                            },
-                        ]}
+                        rules={[{ required: true, message: 'Vui lòng nhập tên!' }]}
                     >
-                        <Input />
+                        <Input size="large" placeholder="Tên của bạn" />
                     </Form.Item>
-                </Col>
-            </Row>
-            <Row justify={"center"}>
-                <Col xs={24} md={8}>
                     <Form.Item
-                        label="Password"
+                        label="Mật khẩu"
                         name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
+                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
                     >
-                        <Input.Password />
+                        <Input.Password size="large" placeholder="********" />
                     </Form.Item>
-                </Col>
-            </Row>
-            <Row justify={"center"}>
-                <Col xs={24} md={8}>
                     <Form.Item
-                        label="confirmPassword"
+                        label="Nhập lại mật khẩu"
                         name="confirmPassword"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your confirmPassword!',
-                            },
-                        ]}
+                        rules={[{ required: true, message: 'Vui lòng xác nhận mật khẩu!' }]}
                     >
-                        <Input.Password />
+                        <Input.Password size="large" placeholder="********" />
                     </Form.Item>
-                </Col>
-            </Row>
-            <Row justify={"center"}>
-                <Col xs={24} md={8}>
-                    <div>
-                        <Button onClick={
-                            () => { form.submit() }
-                        } type="primary">Register</Button>
-                    </div>
-                    <Divider />
-                    <div>Đã có tài khoản? <Link to={"/login"}> Đăng nhập tại đây</Link></div>
-                </Col>
-            </Row>
-        </Form>
-    )
-}
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" size="large" style={{ width: '100%' }}>
+                            Đăng ký
+                        </Button>
+                    </Form.Item>
+                </Form>
 
-export default RegisterPage
+                <p style={{ marginTop: 20 }}>
+                    Đã có tài khoản? <Link to="/login" style={{ color: '#1d4ed8', fontWeight: 500 }}>Đăng nhập tại đây</Link>
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export default RegisterPage;

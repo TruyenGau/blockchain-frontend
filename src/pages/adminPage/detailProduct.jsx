@@ -28,18 +28,18 @@ const DetailProduct = () => {
                 <div id="layoutSidenav_content" className="d-flex flex-column" style={{ minHeight: '100vh' }}>
                     <main className="flex-grow-1">
                         <div className="container-fluid px-4">
-                            <h1 className="mt-4">Detail Product</h1>
+                            <h1 className="mt-4">Chi tiết sản phẩm</h1>
                             <ol className="breadcrumb mb-4">
-                                <li className="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li className="breadcrumb-item"><a href="/admin/product">Products</a></li>
-                                <li className="breadcrumb-item active">Detail Product</li>
+                                <li className="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                                <li className="breadcrumb-item"><a href="/admin/product">Sản phẩm</a></li>
+                                <li className="breadcrumb-item active">Chi tiết sản phẩm</li>
                             </ol>
 
                             <div className="mt-5">
                                 <div className="row">
                                     <div className="col-md-6 col-12 mx-auto">
                                         <div className="d-flex justify-content-between">
-                                            <h3>Product detail with ID: {id}</h3>
+                                            {/* <h3>Product detail with ID: {id}</h3> */}
                                         </div>
 
                                         <hr style={{ width: '80%' }} />
@@ -53,6 +53,11 @@ const DetailProduct = () => {
                                                 <li className="list-group-item">ID: {product._id}</li>
                                                 <li className="list-group-item">Name: {product.name}</li>
                                                 <li className="list-group-item">Price: {product.price}</li>
+                                                <li className="list-group-item">Category: {product.category}</li>
+                                                <li className="list-group-item">Stock: {product.stock}</li>
+                                                <li className="list-group-item">Description: {product.shortDesc}</li>
+
+
                                             </ul>
                                         </div>
                                     </div>
@@ -67,7 +72,7 @@ const DetailProduct = () => {
                             className="btn btn-success mt-3 mb-4"
                             onClick={() => navigate('/showproduct')}  // Sử dụng useNavigate thay cho history.push
                         >
-                            Back
+                            Trở về 
                         </button>
                     </div>
                 </div>
