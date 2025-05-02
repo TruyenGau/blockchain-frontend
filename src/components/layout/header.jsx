@@ -1,31 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AppstoreOutlined, HomeOutlined, MailOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import React, { useContext, useState } from 'react';
+import { HomeOutlined, OrderedListOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button } from 'antd';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/auth.context';
-import { ethers } from "ethers";
-import axios from 'axios';
+import { ethers } from 'ethers';
 import { updateAccount } from '../../util/api';
-import { use } from 'react';
 
+const { Header } = Layout;
 
-const Header = () => {
-
+const CustomHeader = () => {
     const navigate = useNavigate();
     const { auth, setAuth } = useContext(AuthContext);
-    console.log("auth", auth);
+    const [current, setCurrent] = useState('home');
+
     const connectHandler = async () => {
-        if (typeof window.ethereum !== 'undefined') {  // Kiểm tra xem MetaMask có được cài đặt không
+        if (typeof window.ethereum !== 'undefined') {
             try {
-                // Yêu cầu người dùng chọn tài khoản
-                const accounts = await window.ethereum.request({
-                    method: `eth_requestAccounts`,
-                });
-                // Kiểm tra nếu tài khoản được chọn
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 if (accounts.length > 0) {
                     const addressMeta = ethers.utils.getAddress(accounts[0]);
                     if (auth.user.address === "") {
-                        // Cập nhật thông tin địa chỉ ví vào backend (nếu cần)
                         const res = await updateAccount(auth.user.email, addressMeta);
                         if (res) {
                             setAuth({
@@ -36,14 +30,11 @@ const Header = () => {
                                     role: auth.user.role,
                                     address: addressMeta
                                 }
-                            })
+                            });
                         } else {
                             alert("Có lỗi khi cập nhật địa chỉ ví. Vui lòng thử lại.");
                         }
                     }
-
-
-                    // Có thể hiển thị thông báo hoặc log địa chỉ ví
                     console.log("Kết nối thành công với ví MetaMask:", addressMeta);
                 }
             } catch (error) {
@@ -55,22 +46,9 @@ const Header = () => {
         }
     };
 
-    // const checkWalletConnection = async () => {
-    //     const accounts = await window.ethereum.request({
-    //         method: `eth_requestAccounts`,
-    //     });
-    //     const addressMeta = ethers.utils.getAddress(accounts[0]);
-    //     if (auth.user.address === addressMeta) {
-    //         // Nếu địa chỉ ví của người dùng trùng với ví MetaMask đang kết nối
-    //         alert("Địa chỉ ví đã kết nối trùng với ví của người dùng: ", addressMeta);
-    //     } else {
-    //         alert("Địa chỉ ví MetaMask hiện tại không trùng với ví của người dùng!");
-    //         return;
-    //     }
-    // }
-    // useEffect(() => {
-    //     checkWalletConnection();
-    // }, [])
+    const handleConnected = () => {
+        alert(`Địa chỉ ví đã được kết nối: ${auth.user.address.slice(0, 6)}...${auth.user.address.slice(-4)}`);
+    };
 
     const logout = () => {
         localStorage.clear("access_token");
@@ -82,63 +60,82 @@ const Header = () => {
                 address: "",
                 role: ""
             }
-        })
+        });
         navigate("/");
-    }
+    };
 
+    const onClick = (e) => {
+        setCurrent(e.key);
+    };
 
-    const handleConnected = async () => {
-        alert(`Địa chỉ ví đã được kết nối trước đó với tài khoản có địa chỉ ${auth.user.address.slice(0, 6) + "..." + auth.user.address.slice(38, 42)}`);
-    }
-    const items = [
+    const menuItems = [
         {
             label: <NavLink to={"/"}>Trang Chủ</NavLink>,
             key: 'home',
             icon: <HomeOutlined />,
         },
-
         ...(auth.isAuthenticated ? [{
             label: <NavLink to={"/order"}>Lịch sử mua hàng</NavLink>,
-            key: 'user',
-            icon: <UsergroupAddOutlined />,
+            key: 'order',
+            // icon: <UsergroupAddOutlined />,
+            icon: <OrderedListOutlined />,
         }] : []),
-
-
         ...(auth.user.address !== "" ? [{
-            label: <button onClick={handleConnected}>Đã kết nối ví metamask: {auth.user.name}</button>,
-            key: 'metamask',
+            label: <Button type="link" onClick={handleConnected}>Đã kết nối ví: {auth.user.name}</Button>,
+            key: 'wallet-connected',
             icon: <UsergroupAddOutlined />,
         }] : [{
-            label: <button onClick={connectHandler} className='button'>Kết nối ví MetaMask</button>,
-            key: 'metamask1',
+            label: <Button type="primary" onClick={connectHandler}>Kết nối ví MetaMask</Button>,
+            key: 'wallet-connect',
             icon: <UsergroupAddOutlined />,
         }]),
-
         {
-            label: `Welcome ${auth?.user?.email ?? ""}`,
-            key: 'SubMenu',
+            label: `Welcome ${auth.user.email || ""}`,
+            key: 'user',
             icon: <SettingOutlined />,
             children: [
                 ...(auth.isAuthenticated ? [{
-                    label: <button onClick={logout}>Đăng xuất</button>,
+                    label: <Button type="text" onClick={logout}>Đăng xuất</Button>,
                     key: 'logout',
                 }] : [{
                     label: <Link to={"/login"}>Đăng nhập</Link>,
-                    key: 'login'
-                }]),
-            ],
-
-
-        },
-
-
-
+                    key: 'login',
+                }])
+            ]
+        }
     ];
-    const [current, setCurrent] = useState('mail');
-    const onClick = (e) => {
-        console.log('click ', e);
-        setCurrent(e.key);
-    };
-    return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
+
+    return (
+        <>
+            <Header
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    width: '100%',
+                    zIndex: 1000,
+                    backgroundColor: '#f0f5ff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    padding: '0 20px'
+                }}
+            >
+                <div className="logo" style={{ fontWeight: 'bold', fontSize: 18, marginRight: '2rem' }}>
+                    <Link to="/" style={{ color: '#1890ff' }}>MyShop</Link>
+                </div>
+                <Menu
+                    onClick={onClick}
+                    selectedKeys={[current]}
+                    mode="horizontal"
+                    items={menuItems}
+                    style={{ flex: 1, minWidth: 0, backgroundColor: 'transparent' }}
+                />
+            </Header>
+
+            {/* Thêm khoảng trắng bên dưới header để tránh đè nội dung */}
+            <div style={{ height: 64 }}></div>
+        </>
+    );
 };
-export default Header;
+
+export default CustomHeader;

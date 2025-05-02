@@ -65,7 +65,7 @@ const HomeAdmin = () => {
                             </div>
                         </div>
                     </main>
-                    {/* <Footer /> */}
+                    {/* <Footer />  */}
                 </div>
             </div>
         </div>
