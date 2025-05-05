@@ -21,6 +21,7 @@ const CreateProduct = () => {
         category: '',
         image: null,
         address: '',
+        numberproduct: ''
     });
     const [preview, setPreview] = useState(null);
 
@@ -184,6 +185,19 @@ const CreateProduct = () => {
                                                 />
                                             </div>
 
+                                            {/* Stock */}
+                                            <div className="mb-3 col-12 col-md-6">
+                                                <label className="form-label">ProducNumber:</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    name="numberproduct"
+                                                    value={formData.numberproduct}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+
                                             {/* Category */}
                                             <div className="mb-3 col-12 col-md-6">
                                                 <label className="form-label">Category:</label>
@@ -194,7 +208,7 @@ const CreateProduct = () => {
                                                     onChange={handleChange}
                                                     required
                                                 >
-                                                    <option value="APPLE">Apple (MacBook)</option>
+                                                    <option value="APPLE">Apple</option>
                                                     <option value="ASUS">Asus</option>
                                                     <option value="LENOVO">Lenovo</option>
                                                     <option value="DELL">Dell</option>

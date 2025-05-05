@@ -3,6 +3,9 @@ import { deleteProduct, getAllProduct } from '../../util/api';
 import { use } from 'react';
 import { Link } from 'react-router-dom';
 import { notification } from 'antd';
+import { ethers } from "ethers";
+import Dappazon from "../../../blockchain/abis/Dappazon.json";
+import config from "../../config.json";
 
 const ShowProduct = () => {
     const [products, setProducts] = useState([]);
@@ -39,6 +42,35 @@ const ShowProduct = () => {
         }
     }
 
+    const handleDeleteProductContract = async (id) => {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+            const signer = provider.getSigner();
+
+            const dappazon = new ethers.Contract(
+                config[network.chainId].dappazon.address,
+                Dappazon,
+                signer  // Sử dụng signer để thực hiện giao dịch
+            );
+
+            // Gọi hàm deleteProduct với id của sản phẩm
+            const deleteProduct = await dappazon.deleteProduct(id);
+
+            // Đợi giao dịch hoàn tất
+            await deleteProduct.wait();
+
+            // Hiển thị thông báo thành công
+            alert('Sản phẩm đã được xóa thành công từ hợp đồng.');
+        } catch (error) {
+            console.error("Error deleting product from contract:", error);
+            alert("Có lỗi xảy ra khi xóa sản phẩm từ hợp đồng.");
+        }
+    };
+
+
+
+    console.log("products", products);
 
 
     return (
@@ -89,7 +121,7 @@ const ShowProduct = () => {
                                                         <td>
                                                             <Link to={`/getProductDetail/${product._id}`} className="btn btn-success">Xem </Link>
                                                             <Link to={`/updateProduct/${product._id}`} className="btn btn-warning mx-2">Chỉnh sửa</Link>
-                                                            <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id) }}>Xóa</button>
+                                                            <button className="btn btn-danger" onClick={() => { handleDeleteProduct(product._id); handleDeleteProductContract(product.numberproduct) }}>Xóa</button>
                                                         </td>
                                                     </tr>
                                                 ))}

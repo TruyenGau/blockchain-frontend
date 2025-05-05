@@ -42,10 +42,13 @@ const HomeTest = () => {
         setDappazon(dappazon);
 
         const datafetch = [];
-        for (var i = 0; i < countProduct; i++) {
+        for (var i = 0; i < 99; i++) {
             const item = await dappazon.items(i + 1);
-            datafetch.push(item);
+            if (item.stock > 0) {
+                datafetch.push(item);
+            }
         }
+
         setData(datafetch);
 
 
@@ -87,8 +90,8 @@ const HomeTest = () => {
             loadBlockchainData();
         }
     }, [countProduct]); // Khi countProduct thay đổi, gọi lại loadBlockchainData
-    console.log("count", countProduct);
-    console.log("test", test);
+    console.log("data contract", data.id);
+
 
 
     return (
@@ -129,6 +132,7 @@ const HomeTest = () => {
 
                                                             />
                                                         </div>
+
                                                         <div
                                                             className="text-white bg-secondary px-3 py-1 rounded position-absolute"
                                                             style={{ top: "10px", left: "10px" }}

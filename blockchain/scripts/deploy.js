@@ -31,7 +31,7 @@ async function main() {
         { gasLimit: 500000 }
       );
       await transaction.wait();
-
+      // console.log(`Added product: ${data[i].id}`);
     } catch (error) {
       console.error(`Failed to add product: ${data[i].name}`, error);
     }

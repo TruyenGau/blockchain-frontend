@@ -25,17 +25,17 @@ const Banner = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setIndex((prev) => (prev + 1) % images.length);
-        }, 1000);
+        }, 4000);
         return () => clearInterval(interval);
     }, []);
 
-    const prevSlide = () => {
-        setIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
+    // const prevSlide = () => {
+    //     setIndex((prev) => (prev - 1 + images.length) % images.length);
+    // };
 
-    const nextSlide = () => {
-        setIndex((prev) => (prev + 1) % images.length);
-    };
+    // const nextSlide = () => {
+    //     setIndex((prev) => (prev + 1) % images.length);
+    // };
 
     return (
         <div
@@ -91,7 +91,7 @@ const Banner = () => {
                             </a>
                         </div>
 
-                        {/* Nút điều hướng */}
+                        {/* Nút điều hướng
                         <button
                             onClick={prevSlide}
                             className="btn position-absolute top-50 start-0 translate-middle-y"
@@ -118,12 +118,12 @@ const Banner = () => {
                                 zIndex: 2,
                             }}
                         >
-                            ❯
-                        </button>
+                            ❯ */}
+                        {/* </button> */}
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
