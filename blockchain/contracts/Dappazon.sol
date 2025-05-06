@@ -24,6 +24,7 @@ contract Dappazon {
     uint256 public itemCount;
 
     event ProductAdded(uint256 id, string name, address seller);
+    event ProductUpdated(uint256 id, string name, address seller); // Sự kiện khi sản phẩm được cập nhật
     event ProductDeleted(uint256 id); // Sự kiện khi sản phẩm bị xóa
     event Buy(
         address buyer,
@@ -55,6 +56,36 @@ contract Dappazon {
         );
 
         emit ProductAdded(itemCount, _name, msg.sender);
+    }
+
+    // Cập nhật thông tin sản phẩm
+    function updateProduct(
+        uint256 _itemId,
+        string memory _name,
+        string memory _category,
+        string memory _image,
+        uint256 _price,
+        string memory _shortDesc,
+        uint256 _stock
+    ) public {
+        Item storage item = items[_itemId];
+
+        // Kiểm tra xem người gọi có phải là người bán sản phẩm không
+        require(
+            item.seller == msg.sender,
+            "You are not the seller of this product"
+        );
+        require(item.seller != address(0), "Product does not exist");
+
+        // Cập nhật thông tin sản phẩm
+        item.name = _name;
+        item.category = _category;
+        item.image = _image;
+        item.price = _price;
+        item.shortDesc = _shortDesc;
+        item.stock = _stock;
+
+        emit ProductUpdated(_itemId, _name, msg.sender); // Phát ra sự kiện sản phẩm đã được cập nhật
     }
 
     // Xóa sản phẩm (đặt số lượng sản phẩm về 0 và seller thành address(0))

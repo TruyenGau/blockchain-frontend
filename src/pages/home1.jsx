@@ -148,7 +148,7 @@ const HomeTest = () => {
                                                                     {product.name}
                                                                 </Link>
                                                             </h4>
-                                                            <h1>{product.id.toString}a</h1>
+
                                                             <p style={{ fontSize: "13px" }}>{product.shortDesc}</p>
                                                             <div className="d-flex flex-lg-wrap justify-content-center flex-column">
                                                                 <p

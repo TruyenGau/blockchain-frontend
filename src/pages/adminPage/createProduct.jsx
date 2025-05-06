@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 import Dappazon from "../../../blockchain/abis/Dappazon.json";
 import config from "../../config.json";
 import { getCountProduct } from '../../util/api';
-
+import { notification } from 'antd';
 const CreateProduct = () => {
 
     const navigate = useNavigate();
@@ -94,7 +94,6 @@ const CreateProduct = () => {
             });
 
             console.log(response.data); // Kiểm tra phản hồi từ backend
-            alert('Product created successfully!');
             // navigate("/homeadmin");
 
             // Sau khi tạo sản phẩm, bạn có thể sử dụng tên ảnh từ backend và thực hiện hành động tiếp theo
@@ -122,6 +121,12 @@ const CreateProduct = () => {
                     formData.stock
                 );
             await transaction.wait();
+            notification.success({
+                message: 'Thành công',
+                description: 'Tạo sản phẩm thành công!',
+                showProgress: true
+            });
+
             navigate("/showproduct");
 
         } catch (error) {

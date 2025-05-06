@@ -27,11 +27,11 @@ const ShowProduct = () => {
                 if (result.EC === 1) {
                     // Xóa sản phẩm khỏi danh sách trên giao diện mà không cần gọi lại API
                     setProducts(products.filter(product => product._id !== id));
-                    notification.success({
-                        message: 'Thành công',
-                        description: 'Xóa sản phẩm thành công!',
-                        showProgress: true
-                    });
+                    // notification.success({
+                    //     message: 'Thành công',
+                    //     description: 'Xóa sản phẩm thành công!',
+                    //     showProgress: true
+                    // });
                 } else {
                     alert("Failed to delete the product.");
                 }
@@ -51,17 +51,21 @@ const ShowProduct = () => {
             const dappazon = new ethers.Contract(
                 config[network.chainId].dappazon.address,
                 Dappazon,
-                signer  // Sử dụng signer để thực hiện giao dịch
+                signer
             );
 
-            // Gọi hàm deleteProduct với id của sản phẩm
+
             const deleteProduct = await dappazon.deleteProduct(id);
 
-            // Đợi giao dịch hoàn tất
+
             await deleteProduct.wait();
 
-            // Hiển thị thông báo thành công
-            alert('Sản phẩm đã được xóa thành công từ hợp đồng.');
+
+            notification.success({
+                message: 'Thành công',
+                description: 'Xóa sản phẩm thành công!',
+                showProgress: true
+            });
         } catch (error) {
             console.error("Error deleting product from contract:", error);
             alert("Có lỗi xảy ra khi xóa sản phẩm từ hợp đồng.");

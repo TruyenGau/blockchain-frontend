@@ -5,11 +5,19 @@ import axios from "../../util/axios.customize"; // Adjust the import path as nec
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAProduct } from '../../util/api';
 import { notification } from 'antd';
+import { ethers } from "ethers";
+import Dappazon from "../../../blockchain/abis/Dappazon.json";
+import config from "../../config.json";
 
 const UpdateProduct = () => {
     const { id } = useParams();  // Lấy id từ URL
     const [product, setProduct] = useState([]);
     const navigate = useNavigate();
+    const [productUpdate, setProductUpdate] = useState({});
+
+    // const getProduct = () =>{
+
+    // }
 
     const [formData, setFormData] = useState({
         name: '',
@@ -48,7 +56,7 @@ const UpdateProduct = () => {
                 }
             }
         };
-
+        getProduct();
         fetchProduct();
     }, [id]); // Chỉ gọi lại nếu id thay đổi
 
@@ -76,33 +84,62 @@ const UpdateProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Cập nhật thông tin trong cơ sở dữ liệu (backend)
         const data = new FormData();
         for (const key in formData) {
             data.append(key, formData[key]);
         }
 
         try {
+            // Cập nhật thông tin sản phẩm trong database qua API
             const response = await axios.post(`/v1/api/updateProduct/${id}`, data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            console.log(response.data); // Check the response from backend
+            // console.log(response.data); // Kiểm tra phản hồi từ backend
+
+
+            // Sau khi cập nhật trong database, cập nhật trong hợp đồng Ethereum
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+            const dappazon = new ethers.Contract(
+                config[network.chainId].dappazon.address,
+                Dappazon,
+                provider
+            );
+            const signer = provider.getSigner();
+
+            const priceInWei = ethers.utils.parseUnits(formData.price, "ether");
+
+            // Cập nhật sản phẩm trong hợp đồng Ethereum, dùng product.numberproduct làm id sản phẩm
+            const transaction = await dappazon
+                .connect(signer)
+                .updateProduct(
+                    product.numberproduct, // Sử dụng product.numberproduct làm id trong hợp đồng
+                    formData.name,
+                    formData.category,
+                    response.product.image, // Tên ảnh lấy từ backend
+                    priceInWei,
+                    formData.shortDesc,
+                    formData.stock
+                );
+
+            await transaction.wait(); // Chờ giao dịch hoàn tất
             notification.success({
                 message: 'Chỉnh sửa sản phẩm thành công',
                 showProgress: true
             });
-            navigate("/showproduct");
-
+            navigate("/showproduct"); // Chuyển hướng đến trang danh sách sản phẩm sau khi hoàn thành
         } catch (error) {
             console.error('Error updating product:', error);
-            alert('Failed to update product!');
+            alert('Cần kết nối với ví của admin');
         }
     };
 
-
-
+    // console.log("check data product", product.numberproduct)
     return (
         <div className="sb-nav-fixed">
             <Header />

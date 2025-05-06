@@ -16,7 +16,7 @@ async function main() {
   }
   // Lấy dữ liệu từ API
   const data = await getAllProductContract();
-  console.log("data", data)
+  // console.log("data", data)
 
   // Thêm sản phẩm vào hợp đồng
   for (let i = 0; i < data.length; i++) {
@@ -31,7 +31,7 @@ async function main() {
         { gasLimit: 500000 }
       );
       await transaction.wait();
-      console.log(`Added product: `, i);
+      // console.log(`Added product: `, i);
     } catch (error) {
       // console.error(`Failed to add product: ${data[i].name}`, error);
     }
