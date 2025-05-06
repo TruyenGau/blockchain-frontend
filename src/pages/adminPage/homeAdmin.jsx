@@ -46,7 +46,7 @@ const HomeAdmin = () => {
                                 </div>
                                 <div className="col-xl-4 col-md-6">
                                     <div className="card bg-danger text-white mb-4">
-                                        <div className="card-body" style={{ fontSize: "27px", alignContent: "center", alignItems: 'center' }}>Số lượng Product: {countProduct}</div>
+                                        <div className="card-body" style={{ fontSize: "27px", alignContent: "center", alignItems: 'center' }}>Quản lý sản phẩm</div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
                                             <Link className="small text-white stretched-link" to="/showproduct">Xem chi tiết</Link>
                                             <div className="small text-white"><i className="fas fa-angle-right"></i></div>

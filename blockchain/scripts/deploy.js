@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const { getAllProduct } = require("..//util/api"); // Dùng require thay vì import
+const { getAllProductContract } = require("..//util/api"); // Dùng require thay vì import
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -15,8 +15,8 @@ async function main() {
     return ethers.utils.parseUnits(n.toString(), 'ether')
   }
   // Lấy dữ liệu từ API
-  const data = await getAllProduct();
-
+  const data = await getAllProductContract();
+  console.log("data", data)
 
   // Thêm sản phẩm vào hợp đồng
   for (let i = 0; i < data.length; i++) {
@@ -31,9 +31,9 @@ async function main() {
         { gasLimit: 500000 }
       );
       await transaction.wait();
-      // console.log(`Added product: ${data[i].id}`);
+      console.log(`Added product: `, i);
     } catch (error) {
-      console.error(`Failed to add product: ${data[i].name}`, error);
+      // console.error(`Failed to add product: ${data[i].name}`, error);
     }
   }
 }

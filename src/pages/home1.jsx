@@ -44,15 +44,15 @@ const HomeTest = () => {
         const datafetch = [];
         for (var i = 0; i < 99; i++) {
             const item = await dappazon.items(i + 1);
-            if (item.stock > 0) {
-                datafetch.push(item);
-            }
+            datafetch.push(item); // Fetch all items without filtering by stock
         }
 
-        setData(datafetch);
+        // Filter items with stock greater than 0 after fetching all data
+        const filteredData = datafetch.filter(item => item.stock > 0);
 
-
+        setData(filteredData); // Set filtered data to state
     };
+
 
     const handleBuyProduct = async (product) => {
 
@@ -90,7 +90,7 @@ const HomeTest = () => {
             loadBlockchainData();
         }
     }, [countProduct]); // Khi countProduct thay đổi, gọi lại loadBlockchainData
-    console.log("data contract", data.id);
+
 
 
 
@@ -148,6 +148,7 @@ const HomeTest = () => {
                                                                     {product.name}
                                                                 </Link>
                                                             </h4>
+                                                            <h1>{product.id.toString}a</h1>
                                                             <p style={{ fontSize: "13px" }}>{product.shortDesc}</p>
                                                             <div className="d-flex flex-lg-wrap justify-content-center flex-column">
                                                                 <p

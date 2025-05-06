@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '../../components/layout/adminLayout/header';
 import SideBar from '../../components/layout/adminLayout/sidebar';
 import Footer from '../../components/layout/adminLayout/footer';
@@ -9,10 +9,19 @@ import { AuthContext } from '../../components/context/auth.context';
 import { ethers } from "ethers";
 import Dappazon from "../../../blockchain/abis/Dappazon.json";
 import config from "../../config.json";
+import { getCountProduct } from '../../util/api';
 
 const CreateProduct = () => {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
+    const [count, setCount] = useState(0);
+    // const getCoutProduct = async () => {
+    //     const result = await getCountProduct();
+    //     setCount(result.data + 1);
+    // }
+    // useEffect(() => {
+    //     getCoutProduct();
+    // }, [])
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -20,9 +29,33 @@ const CreateProduct = () => {
         stock: '',
         category: '',
         image: null,
-        address: '',
-        numberproduct: ''
+        address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        numberproduct: 0
     });
+
+    const getCoutProduct = async () => {
+        try {
+            const result = await getCountProduct();
+            setCount(result.data + 1);  // Set the count value from API
+        } catch (error) {
+            console.error('Error fetching product count:', error);
+        }
+    };
+
+    // Update the numberproduct whenever count changes
+    useEffect(() => {
+        if (count > 0) {
+            setFormData((prevData) => ({
+                ...prevData,
+                numberproduct: count,  // Set product number dynamically based on count
+            }));
+        }
+    }, [count]);  // Re-run when count is updated
+
+    useEffect(() => {
+        getCoutProduct();
+    }, []);
+
     const [preview, setPreview] = useState(null);
 
     const handleChange = (e) => {
@@ -98,6 +131,10 @@ const CreateProduct = () => {
     };
 
 
+
+
+    console.log("check count", count);
+
     return (
         <div className="sb-nav-fixed">
             <Header />
@@ -159,7 +196,6 @@ const CreateProduct = () => {
                                                 />
                                             </div>
 
-                                            {/* Address */}
                                             <div className="mb-3 col-12 col-md-6">
                                                 <label className="form-label">Address:</label>
                                                 <input
@@ -167,10 +203,12 @@ const CreateProduct = () => {
                                                     className="form-control"
                                                     name="address"
                                                     value={formData.address}
-                                                    onChange={handleChange}
+                                                    // onChange={handleChange}  // Optional: you can still keep it, but the value won't change
+                                                    readOnly  // This makes the input read-only and non-editable
                                                     required
                                                 />
                                             </div>
+
 
                                             {/* Stock */}
                                             <div className="mb-3 col-12 col-md-6">
@@ -180,19 +218,6 @@ const CreateProduct = () => {
                                                     className="form-control"
                                                     name="stock"
                                                     value={formData.stock}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-
-                                            {/* Stock */}
-                                            <div className="mb-3 col-12 col-md-6">
-                                                <label className="form-label">ProducNumber:</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    name="numberproduct"
-                                                    value={formData.numberproduct}
                                                     onChange={handleChange}
                                                     required
                                                 />
@@ -216,6 +241,23 @@ const CreateProduct = () => {
                                                     <option value="ACER">Acer</option>
                                                 </select>
                                             </div>
+
+                                            {/* Stock */}
+                                            <div className="mb-3 col-12 col-md-6">
+                                                {/* <label className="form-label">ProducNumber:</label> */}
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    name="numberproduct"
+                                                    value={formData.numberproduct}
+                                                    // onChange={handleChange}
+                                                    required
+                                                    readOnly
+                                                    hidden
+                                                />
+                                            </div>
+
+
 
                                             {/* Image Upload */}
                                             <div>
