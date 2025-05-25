@@ -24,6 +24,7 @@ const updateAccount = (email, address) => {
         return axios.put(URL_API, data);
     }
 }
+
 const getCountUser = () => {
 
     {
@@ -61,6 +62,33 @@ const getAProduct = (id) => {
     return axios.get(URL_API);
 }
 
+const getAllUsers = () => {
+    const URL_API = "/v1/api/getUser";  // Đây là endpoint API để lấy danh sách người dùng
+    return axios.get(URL_API);  // Không cần truyền token trong header
+}
+
+const getUserDetail = (id) => {
+    const URL_API = `/v1/api/getUserDetail/${id}`;
+    return axios.get(URL_API);
+}
+const deleteUser = (id) => {
+    const URL_API = `/v1/api/users/${id}`;
+    return axios.delete(URL_API);
+}
+
+const updateUser = (id, name, email, address) => {
+    const URL_API = "/v1/api/updateUser";
+    const data = { id, name, email, address };
+    return axios.put(URL_API, { id, name, email, address }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+    ;
+
+
 export {
     createUserApi,
     loginApi,
@@ -71,6 +99,11 @@ export {
     getAllProduct,
     deleteProduct,
     getProductDetail,
-    getAProduct
+    getAProduct,
+    getAllUsers,
+    getUserDetail,
+    deleteUser,
+    updateUser
+
 
 }

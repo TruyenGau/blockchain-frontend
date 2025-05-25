@@ -150,6 +150,7 @@ const CreateProduct = () => {
                             <h1 className="mt-4">Sản Phẩm</h1>
                             <ol className="breadcrumb mb-4">
                                 <li className="breadcrumb-item"><a href="/homeadmin">Trang Chủ</a></li>
+                                <li className="breadcrumb-item"><a href="/showProduct">Sản Phẩm</a></li>
                                 <li className="breadcrumb-item active">Tạo sản phẩm mới</li>
                             </ol>
                             <div className="mt-5">
@@ -321,7 +322,7 @@ const CreateProduct = () => {
                             </div>
                         </div>
                     </main>
-                    <Footer />
+                    {/* <Footer /> */}
                 </div>
             </div>
         </div>

@@ -19,6 +19,13 @@ import CreateProduct from './pages/adminPage/createProduct.jsx';
 import ShowProduct from './pages/adminPage/showProduct.jsx';
 import DetailProduct from './pages/adminPage/detailProduct.jsx';
 import UpdateProduct from './pages/adminPage/updateProduct.jsx';
+import ShowUser from './pages/adminPage/showUser.jsx';
+import DetailUser from './pages/adminPage/detailUser.jsx';
+import UpdateUser from './pages/adminPage/updateUser.jsx';
+import CreateUser from './pages/adminPage/createUser.jsx';
+
+
+
 
 
 
@@ -70,6 +77,26 @@ let router = createBrowserRouter([
     path: "updateProduct/:id",
     element: <UpdateProduct />
   },
+
+  {
+    path: "showUser",  // Đường dẫn tới ShowUser
+    element: <ShowUser />
+  },
+
+  {
+    path: "detailuser/:id",  // Đường dẫn tới chi tiết người dùng
+    element: <DetailUser />
+  },
+
+  {
+    path: "/updateUser/:id",
+    element: <UpdateUser />
+  },
+
+  {
+    path: "/createUser",
+    element: <CreateUser />
+  }
 
 ]);
 ReactDOM.createRoot(document.getElementById('root')).render(
