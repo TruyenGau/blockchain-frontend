@@ -27,26 +27,36 @@ This is the **frontend** of a blockchain-integrated e-commerce platform for sell
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/TruyenGau/blockchain-frontend.git
----
 
+
+```
 ### 2. Install Dependencies
+```bash
 npm install
+```
+
 ### 3. Run Local Blockchain with Hardhat
+```bash
 # Move into the blockchain folder
 cd blockchain
 
 # Start Hardhat local blockchain
 npx hardhat node
+```
 ### 4. Deploy Smart Contracts
+```bash
 In a new terminal, run:
 npx hardhat run ./scripts/deploy.js --network localhost
+```
 ### 5. Start the Frontend App
+```bash
 After deploying, go back to the frontend root:
 cd ..
 npm run start
 
 🔐 Notes
 Make sure Metamask is installed and connected to localhost:8545 (Hardhat Network)
+```
 
 Contracts are deployed locally and frontend interacts via Ethers.js
 
