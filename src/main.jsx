@@ -23,6 +23,7 @@ import ShowUser from './pages/adminPage/showUser.jsx';
 import DetailUser from './pages/adminPage/detailUser.jsx';
 import UpdateUser from './pages/adminPage/updateUser.jsx';
 import CreateUser from './pages/adminPage/createUser.jsx';
+import Cart from './pages/Cart.jsx';
 
 
 
@@ -47,6 +48,10 @@ let router = createBrowserRouter([
         path: "order",
         element: <Order />
       },
+      {
+        path: "/cart",
+        element: <Cart />
+      }
     ]
   },
   {

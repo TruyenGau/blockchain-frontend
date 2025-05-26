@@ -10,29 +10,45 @@ contract Dappazon {
         uint256 price;
         string shortDesc;
         uint256 stock;
-        address seller; // Thông tin người bán
+        address seller;
     }
 
     struct Purchase {
         uint256 itemId;
         uint256 quantity;
-        uint256 purchaseTime; // Thời gian mua sản phẩm
+        uint256 purchaseTime;
     }
 
-    mapping(uint256 => Item) public items; // Lưu các sản phẩm
-    mapping(address => Purchase[]) public userPurchases; // Lưu các sản phẩm đã mua cho từng địa chỉ người dùng
+    struct Review {
+        address reviewer;
+        uint8 rating;
+        string comment;
+        uint timestamp;
+    }
+
+    mapping(uint256 => Item) public items;
+    mapping(address => Purchase[]) public userPurchases;
+    mapping(uint => Review[]) public productReviews;
+    mapping(address => mapping(uint => bool)) public hasReviewed;
+
     uint256 public itemCount;
 
     event ProductAdded(uint256 id, string name, address seller);
-    event ProductUpdated(uint256 id, string name, address seller); // Sự kiện khi sản phẩm được cập nhật
-    event ProductDeleted(uint256 id); // Sự kiện khi sản phẩm bị xóa
+    event ProductUpdated(uint256 id, string name, address seller);
+    event ProductDeleted(uint256 id);
     event Buy(
         address buyer,
         uint256 itemId,
         uint256 quantity,
         uint256 purchaseTime
-    ); // Thêm purchaseTime vào sự kiện
-    event PaymentReceived(address seller, uint256 amount); // Sự kiện ghi nhận giao dịch
+    );
+    event PaymentReceived(address seller, uint256 amount);
+    event ReviewSubmitted(
+        address reviewer,
+        uint itemId,
+        uint8 rating,
+        string comment
+    );
 
     // Thêm sản phẩm mới
     function addProduct(
@@ -54,7 +70,6 @@ contract Dappazon {
             _stock,
             msg.sender
         );
-
         emit ProductAdded(itemCount, _name, msg.sender);
     }
 
@@ -69,15 +84,9 @@ contract Dappazon {
         uint256 _stock
     ) public {
         Item storage item = items[_itemId];
-
-        // Kiểm tra xem người gọi có phải là người bán sản phẩm không
-        require(
-            item.seller == msg.sender,
-            "You are not the seller of this product"
-        );
+        require(item.seller == msg.sender, "You are not the seller");
         require(item.seller != address(0), "Product does not exist");
 
-        // Cập nhật thông tin sản phẩm
         item.name = _name;
         item.category = _category;
         item.image = _image;
@@ -85,25 +94,18 @@ contract Dappazon {
         item.shortDesc = _shortDesc;
         item.stock = _stock;
 
-        emit ProductUpdated(_itemId, _name, msg.sender); // Phát ra sự kiện sản phẩm đã được cập nhật
+        emit ProductUpdated(_itemId, _name, msg.sender);
     }
 
-    // Xóa sản phẩm (đặt số lượng sản phẩm về 0 và seller thành address(0))
+    // Xóa sản phẩm
     function deleteProduct(uint256 _itemId) public {
         Item storage item = items[_itemId];
-
-        // Kiểm tra xem người gọi có phải là người bán sản phẩm không
-        require(
-            item.seller == msg.sender,
-            "You are not the seller of this product"
-        );
+        require(item.seller == msg.sender, "You are not the seller");
         require(item.seller != address(0), "Product does not exist");
 
-        // Đặt lại số lượng sản phẩm thành 0 và seller thành address(0)
         item.stock = 0;
-        item.seller = address(0); // Xóa người bán
-
-        emit ProductDeleted(_itemId); // Phát ra sự kiện sản phẩm đã bị xóa
+        item.seller = address(0);
+        emit ProductDeleted(_itemId);
     }
 
     // Mua sản phẩm
@@ -112,22 +114,19 @@ contract Dappazon {
         require(item.stock >= _quantity, "Not enough stock");
         require(msg.value == item.price * _quantity, "Incorrect payment");
 
-        // Gửi tiền cho người bán
         payable(item.seller).transfer(msg.value);
 
-        // Lưu lại thông tin giao dịch cho người dùng (bao gồm thời gian mua)
         userPurchases[msg.sender].push(
             Purchase(_itemId, _quantity, block.timestamp)
         );
 
-        // Giảm số lượng tồn kho
         item.stock -= _quantity;
 
         emit PaymentReceived(item.seller, msg.value);
-        emit Buy(msg.sender, _itemId, _quantity, block.timestamp); // Thêm thời gian vào sự kiện
+        emit Buy(msg.sender, _itemId, _quantity, block.timestamp);
     }
 
-    // Lấy danh sách các sản phẩm đã mua của người dùng
+    // Lấy danh sách sản phẩm đã mua
     function getUserPurchases(
         address user
     )
@@ -139,17 +138,100 @@ contract Dappazon {
             uint256[] memory purchaseTimes
         )
     {
-        uint256 purchaseCount = userPurchases[user].length;
-        itemIds = new uint256[](purchaseCount);
-        quantities = new uint256[](purchaseCount);
-        purchaseTimes = new uint256[](purchaseCount); // Lưu thời gian mua
+        uint256 count = userPurchases[user].length;
+        itemIds = new uint256[](count);
+        quantities = new uint256[](count);
+        purchaseTimes = new uint256[](count);
 
-        for (uint i = 0; i < purchaseCount; i++) {
+        for (uint i = 0; i < count; i++) {
             itemIds[i] = userPurchases[user][i].itemId;
             quantities[i] = userPurchases[user][i].quantity;
-            purchaseTimes[i] = userPurchases[user][i].purchaseTime; // Lấy thời gian mua
+            purchaseTimes[i] = userPurchases[user][i].purchaseTime;
+        }
+    }
+
+    //  Thêm đánh giá sản phẩm
+    function addReview(
+        uint itemId,
+        uint8 rating,
+        string memory comment
+    ) public {
+        require(rating >= 1 && rating <= 5, "Invalid rating");
+
+        // Kiểm tra đã mua sản phẩm
+        bool purchased = false;
+        for (uint i = 0; i < userPurchases[msg.sender].length; i++) {
+            if (userPurchases[msg.sender][i].itemId == itemId) {
+                purchased = true;
+                break;
+            }
+        }
+        require(purchased, "Must purchase to review");
+        require(!hasReviewed[msg.sender][itemId], "Already reviewed");
+
+        productReviews[itemId].push(
+            Review(msg.sender, rating, comment, block.timestamp)
+        );
+        hasReviewed[msg.sender][itemId] = true;
+
+        emit ReviewSubmitted(msg.sender, itemId, rating, comment);
+    }
+
+    // Lấy danh sách đánh giá
+    function getReviews(
+        uint itemId
+    )
+        public
+        view
+        returns (
+            address[] memory reviewers,
+            uint8[] memory ratings,
+            string[] memory comments,
+            uint[] memory timestamps
+        )
+    {
+        uint len = productReviews[itemId].length;
+        reviewers = new address[](len);
+        ratings = new uint8[](len);
+        comments = new string[](len);
+        timestamps = new uint[](len);
+
+        for (uint i = 0; i < len; i++) {
+            Review memory r = productReviews[itemId][i];
+            reviewers[i] = r.reviewer;
+            ratings[i] = r.rating;
+            comments[i] = r.comment;
+            timestamps[i] = r.timestamp;
+        }
+    }
+    // ✅ Mua nhiều sản phẩm cùng lúc (bỏ vô trong thân contract)
+    function buyMultiple(
+        uint256[] memory itemIds,
+        uint256[] memory quantities
+    ) public payable {
+        require(itemIds.length == quantities.length, "Mismatched arrays");
+
+        uint256 totalPrice = 0;
+
+        for (uint i = 0; i < itemIds.length; i++) {
+            Item storage item = items[itemIds[i]];
+            require(item.stock >= quantities[i], "Insufficient stock");
+            totalPrice += item.price * quantities[i];
         }
 
-        return (itemIds, quantities, purchaseTimes);
+        require(msg.value == totalPrice, "Incorrect total payment");
+
+        for (uint i = 0; i < itemIds.length; i++) {
+            Item storage item = items[itemIds[i]];
+            item.stock -= quantities[i];
+
+            userPurchases[msg.sender].push(
+                Purchase(itemIds[i], quantities[i], block.timestamp)
+            );
+            payable(item.seller).transfer(item.price * quantities[i]);
+
+            emit PaymentReceived(item.seller, item.price * quantities[i]);
+            emit Buy(msg.sender, itemIds[i], quantities[i], block.timestamp);
+        }
     }
 }

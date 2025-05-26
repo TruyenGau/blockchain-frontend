@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { HomeOutlined, OrderedListOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Layout, Menu, Button } from 'antd';
+import { CarTwoTone, HomeOutlined, OrderedListOutlined, SettingOutlined, ShoppingCartOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button, Card } from 'antd';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/auth.context';
 import { ethers } from 'ethers';
@@ -102,6 +102,11 @@ const CustomHeader = () => {
                     key: 'login',
                 }])
             ]
+        },
+        {
+            label: <NavLink type="primary" to={"/cart"}>Cart</NavLink>,
+            key: 'wallet-connect',
+            icon: <ShoppingCartOutlined />,
         }
     ];
 

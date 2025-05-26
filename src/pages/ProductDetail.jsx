@@ -7,19 +7,24 @@ import "./css/owl.carousel.min.css";
 import { ethers } from "ethers";
 import { AuthContext } from "../components/context/auth.context";
 import { notification } from "antd";
+import Rating from "../components/layout/Rating";
 
 const ProductDetail = () => {
     const location = useLocation();
-    const { product } = location.state;  // Lấy sản phẩm từ state
+    const [reviewComment, setReviewComment] = useState("");
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviews, setReviews] = useState([]);
+
+    const { product } = location.state;
     const { auth, setAuth, dappazon, setDappazon, provider, setProvider } = useContext(AuthContext);
-    // Tạo state để lưu trữ số lượng
+
     const [quantity, setQuantity] = useState(1);
     useEffect(() => {
-        window.scrollTo(0, 0);  // Scroll lên đầu trang khi vào trang này
+        window.scrollTo(0, 0);
     }, []);
-    // Hàm xử lý thay đổi số lượng
+
     const handleQuantityChange = (e) => {
-        const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng không nhỏ hơn 1
+        const value = Math.max(1, parseInt(e.target.value) || 1);
         setQuantity(value);
     };
     const buyHandler = async () => {
@@ -42,6 +47,47 @@ const ProductDetail = () => {
 
         })
     };
+
+    const submitReview = async () => {
+        try {
+            const signer = await provider.getSigner();
+            const address = await signer.getAddress();
+            if (address !== auth.user.address) {
+                alert("Địa chỉ ví MetaMask hiện tại không trùng với ví của người dùng!. Vui lòng chọn đúng tài khoản");
+                return;
+            }
+            const transaction = await dappazon
+                .connect(signer).addReview(product.id, reviewRating, reviewComment);
+            await transaction.wait();
+            notification.success({ message: "Gửi đánh giá thành công!" });
+            setReviewComment("");
+            setReviewRating(5);
+            await loadReviews();
+        } catch (err) {
+            notification.error({ message: "Không thể gửi đánh giá", description: err.reason || err.message });
+        }
+    };
+
+    const loadReviews = async () => {
+        try {
+
+            const [users, ratings, comments, timestamps] = await dappazon.getReviews(product.id);
+            const formatted = users.map((u, i) => ({
+                user: u,
+                rating: Number(ratings[i]),
+                comment: comments[i],
+                time: new Date(timestamps[i] * 1000).toLocaleString()
+            }));
+            setReviews(formatted);
+        } catch (err) {
+            console.error("Lỗi khi load đánh giá:", err);
+        }
+    };
+
+    useEffect(() => {
+        loadReviews();
+    }, []);
+
 
     return (
         <div className="container-fluid  mt-5">
@@ -134,13 +180,94 @@ const ProductDetail = () => {
                                             aria-controls="nav-about"
                                             aria-selected="true"
                                         >
-                                            Description
+                                            Mô tả
                                         </button>
                                     </div>
                                 </nav>
-                                <div className="tab-content mb-5">
-                                    <div className="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                        <p>{product.detailDesc}</p>
+                                <div className="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                    <p>{product.detailDesc}</p>
+
+                                    <div className="review-form">
+                                        <style>{
+                                            `.review-form {
+                                                background: #f9f9f9;
+                                                padding: 20px;
+                                                border-radius: 12px;
+                                                border: 1px solid #ddd;
+                                                margin-top: 30px;
+                                                }
+
+                                                .review-form label {
+                                                font-weight: 500;
+                                                margin-bottom: 5px;
+                                                display: block;
+                                                }
+
+                                                .review-form select,
+                                                .review-form textarea {
+                                                border-radius: 6px;
+                                                border: 1px solid #ccc;
+                                                }
+
+                                                .review-form textarea {
+                                                resize: vertical;
+                                                }
+
+                                                .review-form button {
+                                                background-color: #78be20;
+                                                color: white;
+                                                border: none;
+                                                padding: 10px 20px;
+                                                font-weight: 500;
+                                                border-radius: 8px;
+                                                transition: background 0.3s ease;
+                                                }
+
+                                                .review-form button:hover {
+                                                background-color: #5fa000;
+                                                }
+                                                `}</style>
+                                        <h5 className="mb-3">Đánh giá sản phẩm</h5>
+
+                                        <div className="mb-3">
+                                            <label>Số sao:</label>
+                                            <select className="form-select w-auto" value={reviewRating} onChange={(e) => setReviewRating(Number(e.target.value))}>
+                                                {[1, 2, 3, 4, 5].map((s) => (
+                                                    <option key={s} value={s}>{s} sao</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <label>Bình luận:</label>
+                                            <textarea
+                                                className="form-control"
+                                                rows="3"
+                                                placeholder="Viết cảm nghĩ của bạn..."
+                                                value={reviewComment}
+                                                onChange={(e) => setReviewComment(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <button onClick={submitReview}>Gửi đánh giá</button>
+                                    </div>
+
+
+                                    <div className="mt-5">
+                                        <h5>Đánh giá của người dùng</h5>
+                                        {reviews.length === 0 && <p>Chưa có đánh giá nào.</p>}
+                                        {reviews.map((r, idx) => (
+                                            <div key={idx} className="border p-3 my-2 rounded" style={{ backgroundColor: "#f8f9fa" }}>
+                                                <div className="mb-1">
+                                                    {
+                                                        < Rating value={r.rating} />
+                                                    }
+                                                </div>
+                                                <p>{r.comment}</p>
+                                                <small className="text-muted">bởi {r.user.slice(0, 6)}... lúc {r.time}</small>
+                                            </div>
+                                        ))}
+
                                     </div>
                                 </div>
                             </div>
