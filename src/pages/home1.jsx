@@ -31,9 +31,10 @@ const HomeTest = () => {
     const loadBlockchainData = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         setProvider(provider);
-
+        //Đối tượng provider này sẽ cho phép 
+        // bạn truy cập các thông tin từ mạng Ethereum (như tài khoản người dùng, trạng thái mạng, v.v.).
         const network = await provider.getNetwork();
-
+        //tạo một đối tượng hợp đồng thông minh trong ethers.js. 
         const dappazon = new ethers.Contract(
             config[network.chainId].dappazon.address,
             Dappazon,
@@ -44,13 +45,13 @@ const HomeTest = () => {
         const datafetch = [];
         for (var i = 0; i < 99; i++) {
             const item = await dappazon.items(i + 1);
-            datafetch.push(item); // Fetch all items without filtering by stock
+            datafetch.push(item);
         }
 
-        // Filter items with stock greater than 0 after fetching all data
+
         const filteredData = datafetch.filter(item => item.stock > 0);
 
-        setData(filteredData); // Set filtered data to state
+        setData(filteredData);
     };
 
 
@@ -80,16 +81,16 @@ const HomeTest = () => {
     }
 
     useEffect(() => {
-        // Gọi hàm để lấy số lượng sản phẩm và sau đó gọi loadBlockchainData
+
         getCountProduct();
     }, []);
 
-    // Sử dụng useEffect để gọi loadBlockchainData sau khi countProduct thay đổi
+
     useEffect(() => {
         if (countProduct > 0) {
             loadBlockchainData();
         }
-    }, [countProduct]); // Khi countProduct thay đổi, gọi lại loadBlockchainData
+    }, [countProduct]);
 
 
 

@@ -14,11 +14,11 @@ async function main() {
   const tokens = (n) => {
     return ethers.utils.parseUnits(n.toString(), 'ether')
   }
-  // Lấy dữ liệu từ API
+
   const data = await getAllProductContract();
   // console.log("data", data)
 
-  // Thêm sản phẩm vào hợp đồng
+
   for (let i = 0; i < data.length; i++) {
     try {
       const transaction = await dappazon.addProduct(

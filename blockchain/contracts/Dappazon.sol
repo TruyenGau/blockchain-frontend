@@ -10,13 +10,13 @@ contract Dappazon {
         uint256 price;
         string shortDesc;
         uint256 stock;
-        address seller; // Thông tin người bán
+        address seller;
     }
 
     struct Purchase {
         uint256 itemId;
         uint256 quantity;
-        uint256 purchaseTime; // Thời gian mua sản phẩm
+        uint256 purchaseTime;
     }
 
     mapping(uint256 => Item) public items; // Lưu các sản phẩm
@@ -32,7 +32,7 @@ contract Dappazon {
         uint256 quantity,
         uint256 purchaseTime
     ); // Thêm purchaseTime vào sự kiện
-    event PaymentReceived(address seller, uint256 amount); // Sự kiện ghi nhận giao dịch
+    event PaymentReceived(address seller, uint256 amount); // khai báo một sự kiện
 
     // Thêm sản phẩm mới
     function addProduct(
@@ -58,7 +58,6 @@ contract Dappazon {
         emit ProductAdded(itemCount, _name, msg.sender);
     }
 
-    // Cập nhật thông tin sản phẩm
     function updateProduct(
         uint256 _itemId,
         string memory _name,
@@ -85,49 +84,41 @@ contract Dappazon {
         item.shortDesc = _shortDesc;
         item.stock = _stock;
 
-        emit ProductUpdated(_itemId, _name, msg.sender); // Phát ra sự kiện sản phẩm đã được cập nhật
+        emit ProductUpdated(_itemId, _name, msg.sender);
     }
 
-    // Xóa sản phẩm (đặt số lượng sản phẩm về 0 và seller thành address(0))
     function deleteProduct(uint256 _itemId) public {
         Item storage item = items[_itemId];
 
-        // Kiểm tra xem người gọi có phải là người bán sản phẩm không
         require(
             item.seller == msg.sender,
             "You are not the seller of this product"
         );
         require(item.seller != address(0), "Product does not exist");
 
-        // Đặt lại số lượng sản phẩm thành 0 và seller thành address(0)
         item.stock = 0;
-        item.seller = address(0); // Xóa người bán
+        item.seller = address(0);
 
-        emit ProductDeleted(_itemId); // Phát ra sự kiện sản phẩm đã bị xóa
+        emit ProductDeleted(_itemId);
     }
 
-    // Mua sản phẩm
     function buy(uint256 _itemId, uint256 _quantity) public payable {
         Item storage item = items[_itemId];
         require(item.stock >= _quantity, "Not enough stock");
         require(msg.value == item.price * _quantity, "Incorrect payment");
 
-        // Gửi tiền cho người bán
         payable(item.seller).transfer(msg.value);
 
-        // Lưu lại thông tin giao dịch cho người dùng (bao gồm thời gian mua)
         userPurchases[msg.sender].push(
             Purchase(_itemId, _quantity, block.timestamp)
         );
 
-        // Giảm số lượng tồn kho
         item.stock -= _quantity;
 
-        emit PaymentReceived(item.seller, msg.value);
-        emit Buy(msg.sender, _itemId, _quantity, block.timestamp); // Thêm thời gian vào sự kiện
+        emit PaymentReceived(item.seller, msg.value); // phát một sự kiện
+        emit Buy(msg.sender, _itemId, _quantity, block.timestamp);
     }
 
-    // Lấy danh sách các sản phẩm đã mua của người dùng
     function getUserPurchases(
         address user
     )
@@ -142,12 +133,12 @@ contract Dappazon {
         uint256 purchaseCount = userPurchases[user].length;
         itemIds = new uint256[](purchaseCount);
         quantities = new uint256[](purchaseCount);
-        purchaseTimes = new uint256[](purchaseCount); // Lưu thời gian mua
+        purchaseTimes = new uint256[](purchaseCount);
 
         for (uint i = 0; i < purchaseCount; i++) {
             itemIds[i] = userPurchases[user][i].itemId;
             quantities[i] = userPurchases[user][i].quantity;
-            purchaseTimes[i] = userPurchases[user][i].purchaseTime; // Lấy thời gian mua
+            purchaseTimes[i] = userPurchases[user][i].purchaseTime;
         }
 
         return (itemIds, quantities, purchaseTimes);
