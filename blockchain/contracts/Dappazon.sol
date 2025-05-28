@@ -19,6 +19,13 @@ contract Dappazon {
         uint256 purchaseTime;
     }
 
+    struct FullPurchase {
+        address buyer;
+        uint256 itemId;
+        uint256 quantity;
+        uint256 purchaseTime;
+    }
+
     struct Review {
         address reviewer;
         uint8 rating;
@@ -30,6 +37,8 @@ contract Dappazon {
     mapping(address => Purchase[]) public userPurchases;
     mapping(uint => Review[]) public productReviews;
     mapping(address => mapping(uint => bool)) public hasReviewed;
+
+    FullPurchase[] public allPurchases; // ✅ Danh sách tất cả đơn hàng
 
     uint256 public itemCount;
 
@@ -50,7 +59,6 @@ contract Dappazon {
         string comment
     );
 
-    // Thêm sản phẩm mới
     function addProduct(
         string memory _name,
         string memory _category,
@@ -73,7 +81,6 @@ contract Dappazon {
         emit ProductAdded(itemCount, _name, msg.sender);
     }
 
-    // Cập nhật thông tin sản phẩm
     function updateProduct(
         uint256 _itemId,
         string memory _name,
@@ -97,7 +104,6 @@ contract Dappazon {
         emit ProductUpdated(_itemId, _name, msg.sender);
     }
 
-    // Xóa sản phẩm
     function deleteProduct(uint256 _itemId) public {
         Item storage item = items[_itemId];
         require(item.seller == msg.sender, "You are not the seller");
@@ -108,7 +114,6 @@ contract Dappazon {
         emit ProductDeleted(_itemId);
     }
 
-    // Mua sản phẩm
     function buy(uint256 _itemId, uint256 _quantity) public payable {
         Item storage item = items[_itemId];
         require(item.stock >= _quantity, "Not enough stock");
@@ -120,13 +125,56 @@ contract Dappazon {
             Purchase(_itemId, _quantity, block.timestamp)
         );
 
+        allPurchases.push(
+            FullPurchase(msg.sender, _itemId, _quantity, block.timestamp)
+        );
+
         item.stock -= _quantity;
 
         emit PaymentReceived(item.seller, msg.value);
         emit Buy(msg.sender, _itemId, _quantity, block.timestamp);
     }
 
-    // Lấy danh sách sản phẩm đã mua
+    function buyMultiple(
+        uint256[] memory itemIds,
+        uint256[] memory quantities
+    ) public payable {
+        require(itemIds.length == quantities.length, "Mismatched arrays");
+
+        uint256 totalPrice = 0;
+
+        for (uint i = 0; i < itemIds.length; i++) {
+            Item storage item = items[itemIds[i]];
+            require(item.stock >= quantities[i], "Insufficient stock");
+            totalPrice += item.price * quantities[i];
+        }
+
+        require(msg.value == totalPrice, "Incorrect total payment");
+
+        for (uint i = 0; i < itemIds.length; i++) {
+            Item storage item = items[itemIds[i]];
+            item.stock -= quantities[i];
+
+            userPurchases[msg.sender].push(
+                Purchase(itemIds[i], quantities[i], block.timestamp)
+            );
+
+            allPurchases.push(
+                FullPurchase(
+                    msg.sender,
+                    itemIds[i],
+                    quantities[i],
+                    block.timestamp
+                )
+            );
+
+            payable(item.seller).transfer(item.price * quantities[i]);
+
+            emit PaymentReceived(item.seller, item.price * quantities[i]);
+            emit Buy(msg.sender, itemIds[i], quantities[i], block.timestamp);
+        }
+    }
+
     function getUserPurchases(
         address user
     )
@@ -150,34 +198,6 @@ contract Dappazon {
         }
     }
 
-    //  Thêm đánh giá sản phẩm
-    function addReview(
-        uint itemId,
-        uint8 rating,
-        string memory comment
-    ) public {
-        require(rating >= 1 && rating <= 5, "Invalid rating");
-
-        // Kiểm tra đã mua sản phẩm
-        bool purchased = false;
-        for (uint i = 0; i < userPurchases[msg.sender].length; i++) {
-            if (userPurchases[msg.sender][i].itemId == itemId) {
-                purchased = true;
-                break;
-            }
-        }
-        require(purchased, "Must purchase to review");
-        require(!hasReviewed[msg.sender][itemId], "Already reviewed");
-
-        productReviews[itemId].push(
-            Review(msg.sender, rating, comment, block.timestamp)
-        );
-        hasReviewed[msg.sender][itemId] = true;
-
-        emit ReviewSubmitted(msg.sender, itemId, rating, comment);
-    }
-
-    // Lấy danh sách đánh giá
     function getReviews(
         uint itemId
     )
@@ -204,34 +224,55 @@ contract Dappazon {
             timestamps[i] = r.timestamp;
         }
     }
-    // ✅ Mua nhiều sản phẩm cùng lúc (bỏ vô trong thân contract)
-    function buyMultiple(
-        uint256[] memory itemIds,
-        uint256[] memory quantities
-    ) public payable {
-        require(itemIds.length == quantities.length, "Mismatched arrays");
 
-        uint256 totalPrice = 0;
+    function addReview(
+        uint itemId,
+        uint8 rating,
+        string memory comment
+    ) public {
+        require(rating >= 1 && rating <= 5, "Invalid rating");
 
-        for (uint i = 0; i < itemIds.length; i++) {
-            Item storage item = items[itemIds[i]];
-            require(item.stock >= quantities[i], "Insufficient stock");
-            totalPrice += item.price * quantities[i];
+        bool purchased = false;
+        for (uint i = 0; i < userPurchases[msg.sender].length; i++) {
+            if (userPurchases[msg.sender][i].itemId == itemId) {
+                purchased = true;
+                break;
+            }
         }
 
-        require(msg.value == totalPrice, "Incorrect total payment");
+        require(purchased, "Must purchase to review");
+        require(!hasReviewed[msg.sender][itemId], "Already reviewed");
 
-        for (uint i = 0; i < itemIds.length; i++) {
-            Item storage item = items[itemIds[i]];
-            item.stock -= quantities[i];
+        productReviews[itemId].push(
+            Review(msg.sender, rating, comment, block.timestamp)
+        );
+        hasReviewed[msg.sender][itemId] = true;
 
-            userPurchases[msg.sender].push(
-                Purchase(itemIds[i], quantities[i], block.timestamp)
-            );
-            payable(item.seller).transfer(item.price * quantities[i]);
+        emit ReviewSubmitted(msg.sender, itemId, rating, comment);
+    }
 
-            emit PaymentReceived(item.seller, item.price * quantities[i]);
-            emit Buy(msg.sender, itemIds[i], quantities[i], block.timestamp);
+    // ✅ Trả về toàn bộ đơn hàng của tất cả người dùng
+    function getAllPurchases()
+        public
+        view
+        returns (
+            address[] memory buyers,
+            uint256[] memory itemIds,
+            uint256[] memory quantities,
+            uint256[] memory purchaseTimes
+        )
+    {
+        uint count = allPurchases.length;
+        buyers = new address[](count);
+        itemIds = new uint256[](count);
+        quantities = new uint256[](count);
+        purchaseTimes = new uint256[](count);
+
+        for (uint i = 0; i < count; i++) {
+            buyers[i] = allPurchases[i].buyer;
+            itemIds[i] = allPurchases[i].itemId;
+            quantities[i] = allPurchases[i].quantity;
+            purchaseTimes[i] = allPurchases[i].purchaseTime;
         }
     }
 }
