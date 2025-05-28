@@ -11,6 +11,7 @@ import Footer from "../components/layout/footer";
 import { AuthContext } from "../components/context/auth.context";
 import { getAllProduct } from "../util/api";
 import { notification } from "antd";
+import ChatBox from "./ChatBox";
 
 const HomeTest = () => {
     const { auth, dappazon, setDappazon, provider, setProvider } = useContext(AuthContext);
@@ -18,6 +19,8 @@ const HomeTest = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [countProduct, setCountProduct] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
+    const getCartKey = () => `cart_${"lastWallet" || "guest"}`;
+
 
     const getCountProduct = async () => {
         const data = await getAllProduct();
@@ -68,7 +71,7 @@ const HomeTest = () => {
     };
 
     const handleAddToCart = (product) => {
-        const stored = JSON.parse(localStorage.getItem("cart") || "[]");
+        const stored = JSON.parse(localStorage.getItem(getCartKey()) || "[]");
 
         const exists = stored.find(p => p.id === product.id);
         let updated;
@@ -76,7 +79,7 @@ const HomeTest = () => {
         const cleanProduct = {
             id: product.id,
             name: product.name,
-            price: product.price.toString(),  // chuyển về string an toàn
+            price: product.price.toString(),
             quantity: 1,
             image: product.image,
         };
@@ -89,9 +92,10 @@ const HomeTest = () => {
             updated = [...stored, cleanProduct];
         }
 
-        localStorage.setItem("cart", JSON.stringify(updated));
+        localStorage.setItem(getCartKey(), JSON.stringify(updated));
         notification.success({ message: "Đã thêm vào giỏ hàng!" });
     };
+
 
 
 
@@ -214,6 +218,7 @@ const HomeTest = () => {
                 </div>
             </div>
             <Feature />
+            <ChatBox />
         </>
     );
 };

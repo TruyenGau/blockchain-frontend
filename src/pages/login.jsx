@@ -16,6 +16,7 @@ const LoginPage = () => {
 
         if (res && res.EC === 0 && res.user.role === 'user') {
             localStorage.setItem('access_token', res.access_token);
+            localStorage.setItem('lastWallet', res.user.address); // ✅ Lưu ví người dùng
             notification.success({
                 message: 'Người dùng đăng nhập thành công',
                 description: 'success',
@@ -24,6 +25,7 @@ const LoginPage = () => {
             navigate('/');
         } else if (res && res.EC === 0 && res.user.role === 'admin') {
             localStorage.setItem('access_token', res.access_token);
+            localStorage.setItem('lastWallet', res.user.address); // ✅ Lưu ví admin
             notification.success({
                 message: 'Đăng nhập admin thành công',
             });
@@ -43,7 +45,7 @@ const LoginPage = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            background: 'linear-gradient(135deg, #cfe9fd, #e9f7fd)', // Đã chỉnh sửa gradient
+            background: 'linear-gradient(135deg, #cfe9fd, #e9f7fd)',
             padding: '20px'
         }}>
             <div style={{

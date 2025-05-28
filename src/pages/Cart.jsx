@@ -8,9 +8,11 @@ const Cart = () => {
     const { auth, dappazon, provider } = useContext(AuthContext);
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
+    const getCartKey = () => `cart_${"lastWallet" || "guest"}`;
+
 
     useEffect(() => {
-        const stored = localStorage.getItem("cart");
+        const stored = localStorage.getItem(getCartKey());
         if (stored) {
             const parsed = JSON.parse(stored).map(p => ({
                 ...p,
@@ -18,12 +20,14 @@ const Cart = () => {
             }));
             setCart(parsed);
         }
-    }, []);
+    }, [auth.user?.address]);  // 👈 thêm dependency là ví
+
 
     const removeFromCart = (id) => {
         const updated = cart.filter((item) => item.id !== id);
         setCart(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
+        localStorage.setItem(getCartKey(), JSON.stringify(updated));
+
     };
 
     const totalCost = cart.reduce((sum, p) => {
@@ -48,7 +52,8 @@ const Cart = () => {
 
             await tx.wait();
             notification.success({ message: "Mua tất cả sản phẩm thành công!" });
-            localStorage.removeItem("cart");
+            localStorage.removeItem(getCartKey());
+
             setCart([]);
             navigate("/");
         } catch (err) {
@@ -58,7 +63,7 @@ const Cart = () => {
             });
         }
     };
-
+    console.log("Cart component rendered with cart:", localStorage.getItem(getCartKey()));
     return (
         <div className="container mt-5">
             <h3>🛒 Giỏ hàng của bạn</h3>
