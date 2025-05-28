@@ -1,9 +1,28 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth.context';
+import { notification } from 'antd';
 
 const Header = () => {
-    const { auth } = useContext(AuthContext);
+    const { auth, setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const logout = () => {
+        localStorage.clear("access_token");
+        setAuth({
+            isAuthenticated: false,
+            user: {
+                email: "",
+                name: "",
+                address: "",
+                role: ""
+            }
+        });
+        notification.success({
+            message: 'Đăng xuất thành công',
+            showProgress: true
+        });
+        navigate("/login");
+    };
 
     return (
         <nav
@@ -11,7 +30,7 @@ const Header = () => {
             style={{ backgroundColor: '#0d1b2a', padding: '12px 20px' }}
         >
             {/* Logo thương hiệu */}
-            <Link className="navbar-brand fw-bold text-warning" to="/admin" style={{ fontSize: '1.8rem' }}>
+            <Link className="navbar-brand fw-bold text-warning" to="/homeadmin" style={{ fontSize: '1.8rem' }}>
                 💻 LaptopShop
             </Link>
 
@@ -28,25 +47,14 @@ const Header = () => {
                 {/* Dropdown */}
                 <div className="dropdown">
                     <button
-                        className="btn btn-sm btn-outline-light dropdown-toggle"
-                        id="navbarDropdown"
+                        className="btn btn-sm btn-outline-light"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
+                        onClick={logout}
                     >
-                        Tuỳ chọn
+                        Đăng xuất
                     </button>
-                    <ul className="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
-                        <li>
-                            <Link className="dropdown-item" to="#!">⚙️ Cài đặt</Link>
-                        </li>
-                        <li><hr className="dropdown-divider" /></li>
-                        <li>
-                            <form method="POST" action="/logout" className="m-0">
-                                <input type="hidden" name="_csrf" value={auth?.csrfToken} />
-                                <button type="submit" className="dropdown-item">🚪 Đăng xuất</button>
-                            </form>
-                        </li>
-                    </ul>
+
                 </div>
             </div>
         </nav>
