@@ -25,6 +25,7 @@ import UpdateUser from './pages/adminPage/updateUser.jsx';
 import CreateUser from './pages/adminPage/createUser.jsx';
 import Cart from './pages/Cart.jsx';
 import ProductStatistics from './pages/adminPage/productStatistics.jsx';
+import OrderAdmin from './pages/adminPage/OrderAdmin.jsx';
 
 
 
@@ -110,8 +111,11 @@ let router = createBrowserRouter([
   {
     path: "/productStatistics",
     element: <ProductStatistics />
+  },
+  {
+    path: "/orderAdmin",
+    element: <OrderAdmin />
   }
-
 ]);
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

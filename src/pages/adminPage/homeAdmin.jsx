@@ -35,7 +35,7 @@ const HomeAdmin = () => {
                         <div className="container-fluid px-4">
                             <h1 className="mt-4 text-primary">Trang chủ</h1>
                             <div className="row">
-                                <div className="col-xl-4 col-md-6">
+                                <div className="col-xl-3 col-md-6">
                                     <div className="card bg-primary text-white mb-4">
                                         <div className="card-body" style={{ fontSize: "30px" }}>
                                             Số lượng User: {countUser}
@@ -45,7 +45,7 @@ const HomeAdmin = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-xl-4 col-md-6">
+                                <div className="col-xl-3 col-md-6">
                                     <div className="card bg-danger text-white mb-4">
                                         <div className="card-body" style={{ fontSize: "27px" }}>
                                             Quản lý sản phẩm: {countProduct}
@@ -56,7 +56,7 @@ const HomeAdmin = () => {
                                     </div>
                                 </div>
 
-                                <div className="col-xl-4 col-md-6">
+                                <div className="col-xl-3 col-md-6">
                                     <div className="card bg-info text-white mb-4">
                                         <div className="card-body" style={{ fontSize: "27px" }}>
                                             Thống kê sản phẩm{statistics && `: ${statistics.totalProducts}`}
@@ -66,6 +66,18 @@ const HomeAdmin = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                <div className="col-xl-3 col-md-6">
+                                    <div className="card  text-white mb-4 bg-success">
+                                        <div className="card-body" style={{ fontSize: "27px" }}>
+                                            Thống kê sản phẩm{statistics && `: ${statistics.totalProducts}`}
+                                        </div>
+                                        <div className="card-footer d-flex align-items-center justify-content-between">
+                                            <Link className="small text-white stretched-link" to="/orderAdmin">Xem chi tiết</Link>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                             </div>
 
