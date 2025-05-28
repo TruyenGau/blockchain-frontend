@@ -24,6 +24,10 @@ import DetailUser from './pages/adminPage/detailUser.jsx';
 import UpdateUser from './pages/adminPage/updateUser.jsx';
 import CreateUser from './pages/adminPage/createUser.jsx';
 import Cart from './pages/Cart.jsx';
+import ProductStatistics from './pages/adminPage/productStatistics.jsx';
+
+
+
 
 
 
@@ -101,6 +105,11 @@ let router = createBrowserRouter([
   {
     path: "/createUser",
     element: <CreateUser />
+  },
+
+  {
+    path: "/productStatistics",
+    element: <ProductStatistics />
   }
 
 ]);
