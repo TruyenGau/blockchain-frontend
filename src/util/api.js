@@ -88,8 +88,8 @@ const updateUser = (id, name, email, address) => {
 
 const getProductStatistics = async () => {
     const URL_API = "/v1/api/getProductStatistics";
-    const response = await axios.get(URL_API); // response ở đây chính là data do interceptor đã trả về
-    return response;  // trả về dữ liệu luôn, không cần .data
+    const response = await axios.get(URL_API);
+    return response;
 };
 
 

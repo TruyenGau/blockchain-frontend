@@ -3,30 +3,92 @@ import { Link } from "react-router-dom";
 import Header from "../../components/layout/adminLayout/header";
 import Footer from "../../components/layout/adminLayout/footer";
 import SideBar from "../../components/layout/adminLayout/sidebar";
-import { getCountProduct, getCountUser, getProductStatistics } from "../../util/api";
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { getProductStatistics } from "../../util/api";
+import {
+    PieChart,
+    Pie,
+    Cell,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+} from "recharts";
+import { ethers } from "ethers";
+import Dappazon from "../../../blockchain/abis/Dappazon.json";
+import config from "../../config.json";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28DFF", "#FF6E6E"];
-;
 
 const StatisticsProduct = () => {
     const [statistics, setStatistics] = useState(null);
+    const [dailySummary, setDailySummary] = useState([]);
 
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
                 const data = await getProductStatistics();
-                console.log("Kết quả thống kê:", data);
                 setStatistics(data);
             } catch (error) {
                 console.error("Lỗi khi lấy thống kê sản phẩm:", error);
             }
         };
 
+        const fetchOrders = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+            const contract = new ethers.Contract(
+                config[network.chainId].dappazon.address,
+                Dappazon,
+                provider
+            );
+
+            // Tạo map giá sản phẩm
+            const itemPriceMap = {};
+            let index = 1;
+            while (true) {
+                try {
+                    const item = await contract.items(index);
+                    if (item.seller === ethers.constants.AddressZero) break;
+                    itemPriceMap[item.id.toString()] = item.price;
+                    index++;
+                } catch {
+                    break;
+                }
+            }
+
+            const [buyers, itemIds, quantities, times] = await contract.getAllPurchases();
+            const summaryMap = {};
+
+            for (let i = 0; i < buyers.length; i++) {
+                const dateKey = new Date(times[i].toNumber() * 1000).toLocaleDateString("vi-VN");
+                const quantity = parseInt(quantities[i].toString());
+                const itemId = itemIds[i].toString();
+                const price = itemPriceMap[itemId] ? Number(ethers.utils.formatEther(itemPriceMap[itemId])) : 0;
+
+                if (!summaryMap[dateKey]) {
+                    summaryMap[dateKey] = {
+                        date: dateKey,
+                        totalOrders: 0,
+                        totalQuantity: 0,
+                        totalRevenue: 0,
+                    };
+                }
+
+                summaryMap[dateKey].totalOrders += 1;
+                summaryMap[dateKey].totalQuantity += quantity;
+                summaryMap[dateKey].totalRevenue += price * quantity;
+            }
+
+            setDailySummary(Object.values(summaryMap));
+        };
+
         fetchStatistics();
+        fetchOrders();
     }, []);
 
-    // Xử lý dữ liệu
     const categoryData = statistics
         ? Object.entries(statistics.categoryCount).map(([category, count]) => ({
             name: category,
@@ -58,7 +120,6 @@ const StatisticsProduct = () => {
 
                             {statistics && (
                                 <div className="row">
-                                    {/* Biểu đồ sản phẩm theo danh mục */}
                                     <div className="col-xl-6 col-md-12">
                                         <div className="card mb-4" style={{ minHeight: "600px", width: "600px" }}>
                                             <div className="card-body" style={{ padding: "30px" }}>
@@ -88,7 +149,6 @@ const StatisticsProduct = () => {
                                         </div>
                                     </div>
 
-                                    {/* Biểu đồ tồn kho theo danh mục */}
                                     <div className="col-xl-6 col-md-12">
                                         <div className="card mb-4" style={{ minHeight: "600px", width: "600px" }}>
                                             <div className="card-body" style={{ padding: "30px" }}>
@@ -113,6 +173,27 @@ const StatisticsProduct = () => {
                                                         <Tooltip />
                                                         <Legend />
                                                     </PieChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Biểu đồ đơn hàng */}
+                                    <div className="col-xl-12 col-md-12">
+                                        <div className="card mb-4" style={{ minHeight: "500px" }}>
+                                            <div className="card-body" style={{ padding: "30px" }}>
+                                                <h5 className="card-title" style={{ fontSize: "1.5rem", marginBottom: "20px" }}>
+                                                    Đơn hàng theo ngày
+                                                </h5>
+                                                <ResponsiveContainer width="100%" height={400}>
+                                                    <BarChart data={dailySummary}>
+                                                        <XAxis dataKey="date" />
+                                                        <YAxis />
+                                                        <Tooltip />
+                                                        <Legend />
+                                                        <Bar dataKey="totalOrders" fill="#8884d8" name="Đơn hàng" />
+                                                        <Bar dataKey="totalRevenue" fill="#ffc658" name="Tổng doanh thu (ETH)" />
+                                                    </BarChart>
                                                 </ResponsiveContainer>
                                             </div>
                                         </div>

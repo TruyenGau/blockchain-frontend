@@ -37,7 +37,7 @@ const HomeAdmin = () => {
                             <div className="row">
                                 <div className="col-xl-3 col-md-6">
                                     <div className="card bg-primary text-white mb-4">
-                                        <div className="card-body" style={{ fontSize: "30px" }}>
+                                        <div className="card-body text-center" style={{ fontSize: "30px" }}>
                                             Số lượng User: {countUser}
                                         </div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
@@ -47,7 +47,7 @@ const HomeAdmin = () => {
                                 </div>
                                 <div className="col-xl-3 col-md-6">
                                     <div className="card bg-danger text-white mb-4">
-                                        <div className="card-body" style={{ fontSize: "27px" }}>
+                                        <div className="card-body text-center" style={{ fontSize: "27px" }}>
                                             Quản lý sản phẩm: {countProduct}
                                         </div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
@@ -58,7 +58,7 @@ const HomeAdmin = () => {
 
                                 <div className="col-xl-3 col-md-6">
                                     <div className="card bg-info text-white mb-4">
-                                        <div className="card-body" style={{ fontSize: "27px" }}>
+                                        <div className="card-body text-center" style={{ fontSize: "27px" }}>
                                             Thống kê sản phẩm{statistics && `: ${statistics.totalProducts}`}
                                         </div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
@@ -69,8 +69,8 @@ const HomeAdmin = () => {
 
                                 <div className="col-xl-3 col-md-6">
                                     <div className="card  text-white mb-4 bg-success">
-                                        <div className="card-body" style={{ fontSize: "27px" }}>
-                                            Thống kê sản phẩm{statistics && `: ${statistics.totalProducts}`}
+                                        <div className="card-body text-center" style={{ fontSize: "27px" }}>
+                                            Đơn đặt hàng
                                         </div>
                                         <div className="card-footer d-flex align-items-center justify-content-between">
                                             <Link className="small text-white stretched-link" to="/orderAdmin">Xem chi tiết</Link>
